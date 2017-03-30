@@ -22,8 +22,8 @@
  */
 define(['model/pageable'], function (Pageable) {
   'use strict';
-  return ['$scope', 'RuntimeService', 'DataflowUtils', '$timeout', '$rootScope',
-    function ($scope, runtimeService, utils, $timeout, $rootScope) {
+  return ['$scope', 'RuntimeService', 'MetricService', 'DataflowUtils', '$timeout', '$rootScope',
+    function ($scope, runtimeService, metricService, utils, $timeout, $rootScope) {
 
       var runtimeAppsTimeoutPromise;
 
@@ -49,15 +49,44 @@ define(['model/pageable'], function (Pageable) {
           }
         );
       }
+      
+      var metricsTimeoutPromise;
+      function loadMetrics(pageable, showGrowl) {
+          var metricsPromise = metricService.getMetrics(pageable).$promise;
+          if (showGrowl || showGrowl === undefined) {
+            utils.addBusyPromise(metricsPromise);
+          }
+          metricsPromise.then(
+            function (result) {
+              var metrics = result._embedded ? result._embedded.appMetricResourceList : [];
+              utils.$log.info('Retrieved metrics...', metrics);
+              $scope.metrics.items = metrics;
+              $scope.metrics.total = result.page.totalElements;
+              metricsTimeoutPromise = $timeout(function() {
+            	  loadMetrics($scope.pageable, false);
+              }, $rootScope.pageRefreshTime);
+              $scope.$on('$destroy', function(){
+                $timeout.cancel(metricsTimeoutPromise);
+              });
+            }, function (result) {
+              utils.growl.addErrorMessage(result.data[0].message);
+            }
+          );
+        }
+      
+      
       $scope.pageable = new Pageable();
+      $scope.metrics = new Pageable();
       $scope.pagination = {
         current: 1
       };
       $scope.pageChanged = function(newPage) {
         $scope.pageable.pageNumber = newPage-1;
         loadRuntimeApps($scope.pageable);
+        loadMetrics($scope.metrics);
       };
 
       loadRuntimeApps($scope.pageable);
+      loadMetrics($scope.metrics);
     }];
 });

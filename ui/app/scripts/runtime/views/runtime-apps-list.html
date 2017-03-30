@@ -36,6 +36,24 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h2 class="text-center">Metrics</h2>
+                                        
+                                        <div ng-repeat="metric in metrics.items">
+                                            <div ng-if="metric.deploymentId == item.deploymentId">
+                                                <div ng-repeat="metricInstance in metric.instances._embedded.appInstanceMetricResourceList">
+                                                    <div ng-if="metricInstance.instanceId == appInstance.instanceId">
+                                                        <div ng-repeat="(key, value) in metricInstance.metrics">
+                                                            <h3>{{key}}: {{value}}</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                                                                
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">

@@ -61,6 +61,28 @@ define(function (require) {
           }
         };
       })
+      
+      .factory('MetricService', function ($resource, $rootScope, $log) {
+        return {
+          getMetrics: function (pageable) {
+              if (pageable === 'undefined') {
+                $log.info('Getting all runtime metrics.');
+                return $resource($rootScope.dataflowServerUrl + '/metrics', {}).get();
+              }
+              else {
+                $log.info('Getting all runtime metrics for pageable:', pageable);
+                return $resource($rootScope.dataflowServerUrl + '/metrics',
+                  {
+                    'page': pageable.pageNumber,
+                    'size': pageable.pageSize
+                  }).get();
+              }
+            }
+          
+        };
+      })
+      
+      
       .factory('ParserService',require('shared/services/parser'))
       .factory('dataflowVersionInfo', function ($resource, $rootScope, DataflowUtils) {
         console.log('dataflowVersionInfo');
