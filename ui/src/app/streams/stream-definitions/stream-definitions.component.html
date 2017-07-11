@@ -70,7 +70,7 @@
           </button>
         </td>
       </tr>
-      <tr *ngIf="item.active">
+      <tr *ngIf="!isExpanded(item)">
         <td colspan="4">
           <div>flo for {{item.name}} tbd</div>
         <td>

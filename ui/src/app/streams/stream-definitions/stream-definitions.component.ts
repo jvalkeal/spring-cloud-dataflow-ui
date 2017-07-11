@@ -28,10 +28,12 @@ export class StreamDefinitionsComponent implements OnInit {
   
   public items: Observable<Array<any>>;
   private _items: Array<any>;
+  private expandItems: Map<String,Boolean>;
 
   ngOnInit() {
     this._items = [];
     this.items = Observable.of(this._items);
+    this.expandItems = new Map<String,Boolean>();
     console.log('hello');
     this.streamsService.getDefinitions().subscribe(
       data => {
@@ -73,12 +75,17 @@ export class StreamDefinitionsComponent implements OnInit {
   }
 
   expandItem(item:StreamDefinition) {
+    if (this.expandItems.get(item.name)) {
+      this.expandItems.set(item.name, !this.expandItems.get(item.name));
+    }
+    else {
+      this.expandItems.set(item.name, true);
+    }
     console.log(item);
-    item.active = !item.active;
   }
   
   isExpanded(item:StreamDefinition):Boolean {
-    return !item.active;
+    return !this.expandItems.get(item.name);
   }
 
   public showChildModal():void {
@@ -105,4 +112,11 @@ export class StreamDefinitionsComponent implements OnInit {
     this.hideChildModal();
   };
 
+  expandPage() {
+    this.streamDefinitions.items.map(x => {this.expandItems.set(x.name, true)});
+  }
+  
+  collapsePage() {
+    this.streamDefinitions.items.map(x => {this.expandItems.set(x.name, false)});
+  }
 }
