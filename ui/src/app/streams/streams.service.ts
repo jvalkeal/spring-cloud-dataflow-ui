@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Page } from '../shared/model/page';
 import { StreamDefinition } from './model/stream-definition';
@@ -20,7 +20,40 @@ export class StreamsService {
                     .map(this.extractData.bind(this))
                     .catch(this.handleError);
   }
+  
+  destroyDefinition(streamDefinition: StreamDefinition): Observable<Response> {
+    console.log('Destroying...', streamDefinition);
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.delete('/streams/definitions/' + streamDefinition.name, options)
+      .map(data => {
+        this.streamDefinitions.items = this.streamDefinitions.items.filter(item => item.name !== streamDefinition.name);
+      })
+      .catch(this.handleError);
+  }
 
+  undeployDefinition(streamDefinition: StreamDefinition): Observable<Response> {
+    console.log('Undeploying...', streamDefinition);
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.delete('/streams/deployments/' + streamDefinition.name, options)
+      .map(data => {
+        this.streamDefinitions.items = this.streamDefinitions.items.filter(item => item.name !== streamDefinition.name);
+      })
+      .catch(this.handleError);
+  }
+
+  deployDefinition(streamDefinitionName: String, propertiesAsMap: any): Observable<Response> {
+    console.log('Deploying...', streamDefinitionName);
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post('/streams/deployments/' + streamDefinitionName, propertiesAsMap, options)
+      .map(data => {
+        this.streamDefinitions.items = this.streamDefinitions.items.filter(item => item.name !== streamDefinitionName);
+      })
+      .catch(this.handleError);
+  }
+  
   private extractData(res: Response) : Page<StreamDefinition> {
     const body = res.json();
     let items: StreamDefinition[];
