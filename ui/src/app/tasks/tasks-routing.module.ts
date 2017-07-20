@@ -8,6 +8,7 @@ import { TaskCreateComposedTaskComponent } from './task-create-composed-task/tas
 import { TaskExecutionsComponent } from './task-executions/task-executions.component';
 import { TaskExecutionsDetailsComponent } from './task-details/task-details.component';
 import { TaskAppDetailsComponent } from './task-app-details/task-app-details.component';
+import { TaskCreateComponent } from './task-create/task-create.component';
 
 const taskRoutes: Routes = [
   {
@@ -26,6 +27,10 @@ const taskRoutes: Routes = [
       {
           path: 'apps/:id',
           component: TaskAppDetailsComponent,
+      },
+      {
+          path: 'apps/:id/task-create',
+          component: TaskCreateComponent,
       },
       {
           path: 'executions',

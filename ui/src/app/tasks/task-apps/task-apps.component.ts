@@ -36,7 +36,8 @@ export class TaskAppsComponent implements OnInit {
   }
 
   createDefinition(item:AppRegistration) {
-    console.log('createDefinition ...' + item);
+    console.log('createDefinition ..' + item.name);
+    this.router.navigate(['tasks/apps/' + item.name + '/task-create']);
   }
   
 }

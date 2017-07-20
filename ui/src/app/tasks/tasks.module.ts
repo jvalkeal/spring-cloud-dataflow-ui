@@ -9,14 +9,17 @@ import { TaskCreateComposedTaskComponent } from './task-create-composed-task/tas
 import { TaskExecutionsComponent } from './task-executions/task-executions.component';
 import { TaskExecutionsDetailsComponent } from './task-details/task-details.component';
 import { TaskAppDetailsComponent } from './task-app-details/task-app-details.component';
+import { TaskCreateComponent } from './task-create/task-create.component';
 import { TasksService } from './tasks.service';
 import { TasksRoutingModule } from './tasks-routing.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     TasksRoutingModule,
     SharedModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ReactiveFormsModule
   ],
   declarations: [
     TasksComponent,
@@ -25,7 +28,8 @@ import { TasksRoutingModule } from './tasks-routing.module';
     TaskCreateComposedTaskComponent,
     TaskExecutionsComponent,
     TaskExecutionsDetailsComponent,
-    TaskAppDetailsComponent
+    TaskAppDetailsComponent,
+    TaskCreateComponent
   ],
   providers: [
     TasksService
