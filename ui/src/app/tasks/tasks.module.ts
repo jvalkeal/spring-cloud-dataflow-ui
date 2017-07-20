@@ -8,6 +8,7 @@ import { TaskDefinitionsComponent } from './task-definitions/task-definitions.co
 import { TaskCreateComposedTaskComponent } from './task-create-composed-task/task-create-composed-task.component';
 import { TaskExecutionsComponent } from './task-executions/task-executions.component';
 import { TaskExecutionsDetailsComponent } from './task-details/task-details.component';
+import { TaskAppDetailsComponent } from './task-app-details/task-app-details.component';
 import { TasksService } from './tasks.service';
 import { TasksRoutingModule } from './tasks-routing.module';
 
@@ -23,7 +24,8 @@ import { TasksRoutingModule } from './tasks-routing.module';
     TaskDefinitionsComponent,
     TaskCreateComposedTaskComponent,
     TaskExecutionsComponent,
-    TaskExecutionsDetailsComponent
+    TaskExecutionsDetailsComponent,
+    TaskAppDetailsComponent
   ],
   providers: [
     TasksService

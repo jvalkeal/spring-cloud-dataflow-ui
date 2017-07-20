@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { AppRegistration } from '../../apps/model/app-registration';
 import { Page } from '../../shared/model/page';
 import { AppsService } from '../../apps/apps.service';
@@ -16,7 +17,8 @@ export class TaskAppsComponent implements OnInit {
 	
   constructor(
     private appsService: AppsService,
-    private toastyService: ToastyService) {
+    private toastyService: ToastyService,
+    private router: Router) {
   }
 
   ngOnInit() {
@@ -30,6 +32,7 @@ export class TaskAppsComponent implements OnInit {
 
   details(item:AppRegistration) {
     console.log('details ...' + item);
+    this.router.navigate(['tasks/apps/' + item.name]);
   }
 
   createDefinition(item:AppRegistration) {

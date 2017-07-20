@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import {Http, Response, Headers, RequestOptions, URLSearchParams} from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { ErrorHandler } from "../shared/model/error-handler";
 import { Page } from '../shared/model/page';
 import { TaskExecution } from './model/task-execution';
+import { AppInfo, AppInfoOptions } from './model/app-info';
 
 @Injectable()
 export class TasksService {
 
   private taskExecutionsUrl = '/tasks/executions';
+  private appInfoUrl = '/apps/task';
   public taskExecutions: Page<TaskExecution>;
 
   constructor(private http: Http, private errorHandler: ErrorHandler) {
@@ -35,7 +37,21 @@ export class TasksService {
       .map(this.extractData.bind(this))
       .catch(this.errorHandler.handleError);
   }
-  
+
+  getAppInfo(id: string): Observable<AppInfo> {
+    let params = new URLSearchParams();
+    params.append('unprefixedPropertiesOnly', 'true');
+    return this.http.get(this.appInfoUrl + '/' + id, {search: params})
+      .map(this.extractAppInfoData.bind(this))
+      .catch(this.errorHandler.handleError);
+  }
+
+  private extractAppInfoData(res: Response): AppInfo {
+    const body = res.json();    
+    let appInfo: AppInfo = body as AppInfo;
+    return appInfo;
+  }
+
   private extractData(res: Response): TaskExecution {
     const jsonItem = res.json();
     let taskExecution: TaskExecution = new TaskExecution(
