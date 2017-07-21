@@ -10,16 +10,19 @@ import { TaskExecutionsComponent } from './task-executions/task-executions.compo
 import { TaskExecutionsDetailsComponent } from './task-details/task-details.component';
 import { TaskAppDetailsComponent } from './task-app-details/task-app-details.component';
 import { TaskCreateComponent } from './task-create/task-create.component';
+import { TaskBulkDefineComponent } from './task-bulk-define/task-bulk-define.component';
 import { TasksService } from './tasks.service';
 import { TasksRoutingModule } from './tasks-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AlertModule, ModalModule, PopoverModule } from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
     TasksRoutingModule,
     SharedModule,
     NgxPaginationModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PopoverModule.forRoot()
   ],
   declarations: [
     TasksComponent,
@@ -29,7 +32,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     TaskExecutionsComponent,
     TaskExecutionsDetailsComponent,
     TaskAppDetailsComponent,
-    TaskCreateComponent
+    TaskCreateComponent,
+    TaskBulkDefineComponent
   ],
   providers: [
     TasksService

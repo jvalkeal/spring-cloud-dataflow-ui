@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 import { ErrorHandler } from "../shared/model/error-handler";
 import { Page } from '../shared/model/page';
 import { TaskExecution } from './model/task-execution';
+import { TaskDefinition } from './model/task-definition';
 import { AppInfo, AppInfoOptions } from './model/app-info';
 
 @Injectable()
@@ -15,9 +16,11 @@ export class TasksService {
   private appInfoUrl = '/apps/task';
   private taskDefinitionsUrl = '/tasks/definitions';
   public taskExecutions: Page<TaskExecution>;
+  public taskDefinitions: Page<TaskDefinition>;
 
   constructor(private http: Http, private errorHandler: ErrorHandler) {
     this.taskExecutions = new Page<TaskExecution>();
+    this.taskDefinitions = new Page<TaskDefinition>();
   }
 
   getExecutions(): Observable<Page<TaskExecution>> {
@@ -44,6 +47,19 @@ export class TasksService {
     params.append('unprefixedPropertiesOnly', 'true');
     return this.http.get(this.appInfoUrl + '/' + id, {search: params})
       .map(this.extractAppInfoData.bind(this))
+      .catch(this.errorHandler.handleError);
+  }
+
+  getDefinitions(): Observable<Page<TaskDefinition>> {
+    const params = new URLSearchParams();
+    params.append('page', this.taskDefinitions.pageNumber.toString());
+    params.append('size', this.taskDefinitions.pageSize.toString());
+
+    if (this.taskDefinitions.filter && this.taskDefinitions.filter.length > 0) {
+      params.append('search', this.taskDefinitions.filter);
+    }
+    return this.http.get(this.taskDefinitionsUrl, {search: params})
+      .map(this.extractDefinitionsData.bind(this))
       .catch(this.errorHandler.handleError);
   }
 
@@ -118,6 +134,38 @@ export class TasksService {
 
     console.log('Extracted Task Executions:', this.taskExecutions);
     return this.taskExecutions;
+  }
+
+  private extractDefinitionsData(res: Response): Page<TaskDefinition> {
+    const body = res.json();
+    let items: TaskDefinition[];
+    if (body._embedded && body._embedded.taskDefinitionResourceList) {
+      items = body._embedded.taskDefinitionResourceList.map(jsonItem => {
+        const taskDefinition: TaskDefinition = new TaskDefinition(
+          jsonItem.name,
+          jsonItem.dslText,
+          jsonItem.composed,
+          jsonItem.status
+        );
+        return taskDefinition;
+      });
+    }
+    else {
+      items = [];
+    }
+
+    if (body.page) {
+      console.log('BODY', body.page);
+      this.taskDefinitions.pageNumber = body.page.number;
+      this.taskDefinitions.pageSize = body.page.size;
+      this.taskDefinitions.totalElements = body.page.totalElements;
+      this.taskDefinitions.totalPages = body.page.totalPages;
+    }
+
+    this.taskDefinitions.items = items;
+
+    console.log('Extracted Task Definitions:', this.taskDefinitions);
+    return this.taskDefinitions;
   }
 
 }

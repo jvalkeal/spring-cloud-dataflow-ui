@@ -9,6 +9,7 @@ import { TaskExecutionsComponent } from './task-executions/task-executions.compo
 import { TaskExecutionsDetailsComponent } from './task-details/task-details.component';
 import { TaskAppDetailsComponent } from './task-app-details/task-app-details.component';
 import { TaskCreateComponent } from './task-create/task-create.component';
+import { TaskBulkDefineComponent } from './task-bulk-define/task-bulk-define.component';
 
 const taskRoutes: Routes = [
   {
@@ -43,6 +44,10 @@ const taskRoutes: Routes = [
       {
           path: 'create-composed-task',
           component: TaskCreateComposedTaskComponent
+      },
+      {
+        path: 'bulk-define-tasks',
+        component: TaskBulkDefineComponent,
       },
       {
         path: 'definitions',
