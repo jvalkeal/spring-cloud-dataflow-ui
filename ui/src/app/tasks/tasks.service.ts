@@ -13,10 +13,11 @@ export class TasksService {
 
   private taskExecutionsUrl = '/tasks/executions';
   private appInfoUrl = '/apps/task';
+  private taskDefinitionsUrl = '/tasks/definitions';
   public taskExecutions: Page<TaskExecution>;
 
   constructor(private http: Http, private errorHandler: ErrorHandler) {
-    this.taskExecutions = new Page<TaskExecution>();	  
+    this.taskExecutions = new Page<TaskExecution>();
   }
 
   getExecutions(): Observable<Page<TaskExecution>> {
@@ -46,8 +47,20 @@ export class TasksService {
       .catch(this.errorHandler.handleError);
   }
 
+  createDefinition(definition: string, name: string) {
+    console.log('Create task definition ' + definition + ' ' + name);
+    const params = new URLSearchParams();
+    params.append('definition', definition);
+    params.append('name', name);
+    const headers = new Headers({'Content-Type': 'application/json'});
+    const options = new RequestOptions({headers: headers, params: params});
+
+    return this.http.post(this.taskDefinitionsUrl, {}, options)
+      .catch(this.errorHandler.handleError);
+  }
+
   private extractAppInfoData(res: Response): AppInfo {
-    const body = res.json();    
+    const body = res.json();
     let appInfo: AppInfo = body as AppInfo;
     return appInfo;
   }
@@ -68,7 +81,7 @@ export class TasksService {
     );
     return taskExecution;
   }
-  
+
   private extractPagedData(res: Response): Page<TaskExecution> {
     const body = res.json();
     let items: TaskExecution[];
@@ -106,5 +119,5 @@ export class TasksService {
     console.log('Extracted Task Executions:', this.taskExecutions);
     return this.taskExecutions;
   }
-  
+
 }

@@ -1,11 +1,11 @@
 <h1>Create Definition for Task App {{id}}</h1>
 
-<form class="form-horizontal" novalidate [formGroup]="form" (ngSubmit)="submitTaskDefinition()">
+<form class="form-horizontal" novalidate (ngSubmit)="submitTaskDefinition()">
 
   <fieldset id="commonDefinitionParameters">
     <div class="form-group" [ngClass]="form.controls.definitionName.errors ? 'has-warning has-feedback' : ''">
       <label for="definitionName" class="col-sm-3 control-label">Definition Name</label>
-      <div class="col-sm-9">
+      <div class="col-sm-9" [formGroup]="form">
         <input type="text" id="definitionName" name="definitionName" autofocus
               class="form-control" placeholder="Enter a definition name" formControlName="definitionName">
         <span class="glyphicon glyphicon-warning-sign form-control-feedback" *ngIf="form.controls.definitionName.errors"></span>
@@ -17,37 +17,42 @@
   <fieldset id="taskParameters">
     <legend>Parameters</legend>
     <div class="form-group" *ngFor="let definitionParam of appInfo?.options">
-    
+
       <label for="{{definitionParam.name}}" class="col-sm-3 control-label">{{definitionParam.name}}</label>
-      <div class="col-sm-7" ng-if="definitionParam.type !== 'Password' && definitionParam.type !== 'boolean'">
-        <input type="text" id="{{definitionParam.name}}"
-               name="{{definitionParam.name}}" class="form-control" placeholder="" ng-model="definitionParam.value">
+      <div class="col-sm-10" *ngIf="definitionParam.type !== 'Password' && definitionParam.type !== 'boolean'" [formGroup]="form">
+        <input type="text" id="{{definitionParam.name}}" name="{{definitionParam.name}}"
+               class="form-control" [formControlName]="definitionParam.id">
         <p class="help-block">{{definitionParam.description}}</p>
       </div>
-      <div class="col-sm-7" *ngIf="definitionParam.type === 'Password'">
-        <input type="password" id="{{definitionParam.name}}"
-               name="{{definitionParam.name}}" class="form-control" placeholder="" ng-model="definitionParam.value">
+      <div class="col-sm-10" *ngIf="definitionParam.type === 'Password'" [formGroup]="form">
+        <input type="password" id="{{definitionParam.name}}" name="{{definitionParam.name}}"
+               class="form-control" [formControlName]="definitionParam.id">
         <p class="help-block">{{definitionParam.description}}</p>
       </div>
-      <div class="col-sm-7" *ngIf="definitionParam.type === 'boolean'">
+      <div class="col-sm-10" *ngIf="definitionParam.type === 'boolean'" [formGroup]="form">
         <div class="checkbox">
           <label>
-            <input type="checkbox" id="{{definitionParam.name}}" ng-true-value="'true'" ng-false-value="'false'"
-                   name="{{definitionParam.name}}" ng-model="definitionParam.value">
+            <input type="checkbox" id="{{definitionParam.name}}" name="{{definitionParam.name}}"
+                   [formControlName]="definitionParam.id">
               {{definitionParam.description}}
           </label>
         </div>
       </div>
-      <div class="col-sm-2 checkbox">
+      <div class="col-sm-4 checkbox" [formGroup]="iform">
         <label>
-          <input type="checkbox" id="{{definitionParam.nameInclude}}" ng-model="definitionParam.valueInclude"
-                 ng-true-value="'true'" ng-false-value="'false'"> Include
+          <input type="checkbox" id="{{definitionParam.name+'.include'}}"
+                 [formControlName]="definitionParam.id+'.include'">Include
         </label>
       </div>
-      
+
     </div>
     <div class="row" *ngIf="!appInfo">No parameters available.</div>
   </fieldset>
+
+  <h2>Resulting Definition</h2>
+  <div class="row">
+    <div class="col-xs-12"><pre>{{definition}}</pre></div>
+  </div>
 
   <div class="row">
     <div class="col-md-12 text-right">

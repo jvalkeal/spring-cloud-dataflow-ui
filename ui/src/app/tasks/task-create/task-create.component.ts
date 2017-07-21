@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
@@ -10,15 +10,16 @@ import { AppInfo, AppInfoOptions } from '../model/app-info';
   selector: 'app-task-create',
   templateUrl: './task-create.component.html',
 })
-export class TaskCreateComponent implements OnInit {
+export class TaskCreateComponent implements OnInit, OnDestroy {
 
   id: string;
   private sub: any;
   form: FormGroup;
+  iform: FormGroup;
   busy: Subscription;
-//  deploymentProperties = new FormControl("", validateDeploymentProperties);
-  definitionName = new FormControl("");
+  definitionName = new FormControl('');
   appInfo: AppInfo;
+  definition: string;
 
   constructor(
     private tasksService: TasksService,
@@ -28,8 +29,9 @@ export class TaskCreateComponent implements OnInit {
     fb: FormBuilder
   ) {
       this.form = fb.group({
-        "definitionName": this.definitionName
+        'definitionName': this.definitionName
       });
+      this.iform = fb.group({});
   }
 
   ngOnInit() {
@@ -37,10 +39,24 @@ export class TaskCreateComponent implements OnInit {
         this.id = params['id'];
         this.busy = this.tasksService.getAppInfo(this.id).subscribe(
           data => {
+            for (const o of data.options) {
+              const control: FormControl = new FormControl(o.defaultValue);
+              control.valueChanges.map(x => {
+                console.log('xxx ' + x);
+                this.calculateDefinition();
+              }).subscribe();
+              this.form.addControl(o.id, control);
+              const icontrol: FormControl = new FormControl(false);
+              icontrol.valueChanges.map(x => {
+                console.log('xxx ' + x);
+                this.calculateDefinition();
+              }).subscribe();
+              this.iform.addControl(o.id + '.include', icontrol);
+            }
             this.appInfo = data;
             this.toastyService.success('App info loaded.');
           }
-       );       
+       );
      });
   }
 
@@ -51,9 +67,32 @@ export class TaskCreateComponent implements OnInit {
   back() {
     this.router.navigate(['tasks/apps']);
   }
-  
+
   submitTaskDefinition() {
-    console.log('submitTaskDefinition ' + this.form)	  
+    const def = this.calculateDefinition();
+    this.tasksService.createDefinition(def, this.definitionName.value).subscribe();
   }
-  
+
+  calculateDefinition() {
+    let def: string = this.appInfo.name;
+
+    for (const key in this.form.controls) {
+      if (this.form.controls.hasOwnProperty(key)) {
+        const control: FormControl = <FormControl>this.form.controls[key];
+        console.log('uuu1 ' + key + ' ' + control.value);
+        console.log('uuu2 ' + this.iform.contains(key + '.include'));
+        if (this.iform.contains(key + '.include')) {
+          const icontrol: FormControl = <FormControl>this.iform.controls[key + '.include'];
+          console.log('uuu3 ' + icontrol.value);
+          if (icontrol.value === true) {
+            def = def + ' --' + key + '="' + control.value + '"';
+          }
+        }
+      }
+    }
+    this.definition = def;
+    console.log(this.definitionName.value + ' ' + def);
+    return def;
+  }
+
 }
