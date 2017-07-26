@@ -118,7 +118,7 @@ export function validateProperties(formControl: FormControl) {
       if (prop && prop.length > 0 && !prop.startsWith('#')) {
         const keyValue = prop.split('=');
         if (keyValue.length !== 2) {
-          return {validateProperties: {reason: 'Invalid property "' + prop + '" must contain a single "=".' }};
+          return {validateProperties: {reason: '"' + prop + '" must contain a single "=".' }};
         }
       }
     }
