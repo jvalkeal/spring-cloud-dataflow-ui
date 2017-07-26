@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, ContentChildren, QueryList, forwardRef, ViewChildren} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TasksService } from '../tasks.service';
 import { PropertyTableComponent } from '../../shared/components/property-table/property-table.component';
@@ -11,7 +11,7 @@ export class TaskLaunchComponent implements OnInit, OnDestroy {
 
   id: string;
   private sub: any;
-  private taskArguments: PropertyTableComponent;
+  @ViewChildren(PropertyTableComponent) propertyTables;
 
   constructor(
     private tasksService: TasksService,
@@ -34,9 +34,21 @@ export class TaskLaunchComponent implements OnInit, OnDestroy {
   }
 
   launch(name: string) {
-    console.log('launch', name)
-    this.tasksService.launchDefinition(name).subscribe();
+    const taskArguments = [];
+    const taskProperties = [];
+    this.propertyTables.toArray().forEach(t => {
+      if (t.id === 'arguments') {
+        t.getProperties().forEach(item => {
+          taskArguments.push(item.key + '=' + item.value);
+        });
+      }
+      if (t.id === 'properties') {
+        t.getProperties().forEach(item => {
+          taskProperties.push(item.key + '=' + item.value);
+        });
+      }
+    });
+    this.tasksService.launchDefinition(name, taskArguments.join(','), taskProperties.join(',')).subscribe();
     this.router.navigate(['tasks/definitions']);
   }
-
 }

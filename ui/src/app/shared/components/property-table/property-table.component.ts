@@ -12,6 +12,7 @@ import {NG_VALIDATORS, FormBuilder, FormControl, FormGroup, Validators} from '@a
 })
 export class PropertyTableComponent implements OnInit {
 
+  @Input() id: string;
   @Input() titleText: string;
   @Input() emptyText: string;
   @Input() addText: string;

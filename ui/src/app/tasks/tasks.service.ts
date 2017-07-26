@@ -85,11 +85,15 @@ export class TasksService {
       .catch(this.errorHandler.handleError);
   }
 
-  launchDefinition(name: string) {
-    // TODO: add arguments and properties
-    // POST http://localhost:9393/tasks/executions?arguments=&name=bartask2&properties=
+  launchDefinition(name: string, taskArguments?: string, taskProperties?: string) {
     const params = new URLSearchParams();
     params.append('name', name);
+    if (taskArguments) {
+      params.append('arguments', taskArguments);
+    }
+    if (taskProperties) {
+      params.append('properties', taskProperties);
+    }
     const headers = new Headers({'Content-Type': 'application/json'});
     const options = new RequestOptions({headers: headers, params: params});
     return this.http.post(this.taskExecutionsUrl, {}, options)
