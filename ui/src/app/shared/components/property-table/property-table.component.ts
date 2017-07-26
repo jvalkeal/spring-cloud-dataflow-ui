@@ -136,7 +136,7 @@ function validateKeyOrValueRequired(formControl: FormControl) {
 }
 
 @Component({
-  selector: 'tab',
+  selector: 'app-tab',
   styles: [`
     .pane{
       padding: 1em;
@@ -148,25 +148,27 @@ function validateKeyOrValueRequired(formControl: FormControl) {
     </div>
   `
 })
-export class Tab {
+export class TabComponent {
   @Input('tabTitle') title: string;
   @Input() active = false;
 }
 
 @Component({
-  selector: 'tabs',
+  selector: 'app-tabs',
   template: `
-    <ul class="nav nav-tabs">
-      <li *ngFor="let tab of tabs" (click)="selectTab(tab)" [class.active]="tab.active">
-        {{tab.title}}
-      </li>
-    </ul>
-    <ng-content></ng-content>
+    <div class="tab-simple">
+      <ul class="nav nav-tabs">
+        <li *ngFor="let tab of tabs" (click)="selectTab(tab)" role="presentation" [class.active]="tab.active">
+          <a>{{tab.title}}</a>
+        </li>
+      </ul>
+      <ng-content></ng-content>
+    </div>
   `
 })
-export class Tabs implements AfterContentInit {
+export class TabsComponent implements AfterContentInit {
 
-  @ContentChildren(Tab) tabs: QueryList<Tab>;
+  @ContentChildren(TabComponent) tabs: QueryList<TabComponent>;
 
   ngAfterContentInit() {
     const activeTabs = this.tabs.filter((tab) => tab.active);
@@ -175,7 +177,7 @@ export class Tabs implements AfterContentInit {
     }
   }
 
-  selectTab(tab: Tab) {
+  selectTab(tab: TabComponent) {
     this.tabs.toArray().forEach((t) => t.active = false);
     tab.active = true;
   }

@@ -13,8 +13,10 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { TriStateCheckboxComponent } from './components/tri-state-checkbox.component';
 import { TriStateButtonComponent } from './components/tri-state-button.component';
 import { KeyValuePipe } from "./pipes/key-value-filter.pipe";
-import {PropertyTableComponent, Tab, Tabs} from './components/property-table/property-table.component';
-import {ModalModule} from "ngx-bootstrap";
+import {
+  PropertyTableComponent, TabComponent, TabsComponent
+} from './components/property-table/property-table.component';
+import {ModalModule, TabsModule} from "ngx-bootstrap";
 
 const busyConfig: BusyConfig = {
     message: 'Processing..',
@@ -46,7 +48,7 @@ const busyConfig: BusyConfig = {
     TriStateButtonComponent,
     TriStateCheckboxComponent,
     PropertyTableComponent,
-    Tabs, Tab],
+    TabsComponent, TabComponent],
   providers: [
     StompService,
     ErrorHandler],

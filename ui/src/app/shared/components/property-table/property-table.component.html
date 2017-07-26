@@ -35,62 +35,60 @@
         </button>
       </div>
 
-      <div class="tab-simple">
-        <tabs>
-          <tab tabTitle="Single">
-            <form class="form-horizontal" novalidate (ngSubmit)="submitSingleProperty()" [formGroup]="singleForm">
-              <div class="modal-body">
-                <div class="form-group" [ngClass]="singleForm.controls.singlePropertyKey.errors ? 'has-warning has-feedback' : ''">
-                  <label for="singlePropertyKey" class="col-sm-2 control-label">Key</label>
-                  <div class="col-sm-18">
-                    <input id="singlePropertyKey" name="singlePropertyKey" formControlName="singlePropertyKey">
-                    <span class="glyphicon glyphicon-warning-sign form-control-feedback" *ngIf="singleForm.controls.singlePropertyKey.errors"></span>
-                    <p class="help-block" *ngIf="singleForm.controls.singlePropertyKey.errors">The key must be set</p>
-                  </div>
-                </div>
-                <div class="form-group" [ngClass]="singleForm.controls.singlePropertyValue.errors ? 'has-warning has-feedback' : ''">
-                  <label for="singlePropertyValue" class="col-sm-2 control-label">Value</label>
-                  <div class="col-sm-18">
-                    <input id="singlePropertyValue" name="singlePropertyValue" formControlName="singlePropertyValue">
-                    <span class="glyphicon glyphicon-warning-sign form-control-feedback" *ngIf="singleForm.controls.singlePropertyValue.errors"></span>
-                    <p class="help-block" *ngIf="singleForm.controls.singlePropertyValue.errors">The value must be set</p>
-                  </div>
+      <app-tabs>
+        <app-tab tabTitle="Single">
+          <form class="form-horizontal" novalidate (ngSubmit)="submitSingleProperty()" [formGroup]="singleForm">
+            <div class="modal-body">
+              <div class="form-group" [ngClass]="singleForm.controls.singlePropertyKey.errors ? 'has-warning has-feedback' : ''">
+                <label for="singlePropertyKey" class="col-sm-2 control-label">Key</label>
+                <div class="col-sm-18">
+                  <input id="singlePropertyKey" name="singlePropertyKey" formControlName="singlePropertyKey">
+                  <span class="glyphicon glyphicon-warning-sign form-control-feedback" *ngIf="singleForm.controls.singlePropertyKey.errors"></span>
+                  <p class="help-block" *ngIf="singleForm.controls.singlePropertyKey.errors">The key must be set</p>
                 </div>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
-                <button class="btn btn-primary" [disabled]="!singleForm.valid">Set</button>
-              </div>
-            </form>
-          </tab>
-          <tab tabTitle="Bulk">
-            <form class="form-horizontal" novalidate (ngSubmit)="submitBulkProperties()" [formGroup]="bulkForm">
-              <div class="modal-body">
-                <div class="form-group" [ngClass]="bulkForm.controls.bulkProperties.errors ? 'has-warning has-feedback' : ''">
-                  <label for="bulkProperties" class="col-sm-2 control-label">Properties</label>
-                  <div class="col-sm-18">
-                    <textarea class="form-control" id="bulkProperties" name="bulkProperties" formControlName="bulkProperties"
-                              autofocus rows="5"></textarea>
-                    <span class="glyphicon glyphicon-warning-sign form-control-feedback" *ngIf="bulkForm.controls.bulkProperties.errors"></span>
-                    <p class="help-block" *ngIf="bulkForm.controls.bulkProperties.errors">The format of your deployment properties is invalid. {{bulkForm.controls.bulkProperties.errors.validateProperties.reason}}</p>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-6 control-label">Select Properties File</label>
-                  <div class="col-sm-14">
-                    <input type="file" (change)="displayFileContents($event)"/>
-                    <p class="help-block">Please provide a text file containing {{titleText}}. This will be used to populate the text area above.</p>
-                  </div>
+              <div class="form-group" [ngClass]="singleForm.controls.singlePropertyValue.errors ? 'has-warning has-feedback' : ''">
+                <label for="singlePropertyValue" class="col-sm-2 control-label">Value</label>
+                <div class="col-sm-18">
+                  <input id="singlePropertyValue" name="singlePropertyValue" formControlName="singlePropertyValue">
+                  <span class="glyphicon glyphicon-warning-sign form-control-feedback" *ngIf="singleForm.controls.singlePropertyValue.errors"></span>
+                  <p class="help-block" *ngIf="singleForm.controls.singlePropertyValue.errors">The value must be set</p>
                 </div>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
-                <button class="btn btn-primary" [disabled]="!bulkForm.valid">Set</button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+              <button class="btn btn-primary" [disabled]="!singleForm.valid">Set</button>
+            </div>
+          </form>
+        </app-tab>
+        <app-tab tabTitle="Bulk">
+          <form class="form-horizontal" novalidate (ngSubmit)="submitBulkProperties()" [formGroup]="bulkForm">
+            <div class="modal-body">
+              <div class="form-group" [ngClass]="bulkForm.controls.bulkProperties.errors ? 'has-warning has-feedback' : ''">
+                <label for="bulkProperties" class="col-sm-2 control-label">Properties</label>
+                <div class="col-sm-18">
+                  <textarea class="form-control" id="bulkProperties" name="bulkProperties" formControlName="bulkProperties"
+                            autofocus rows="5"></textarea>
+                  <span class="glyphicon glyphicon-warning-sign form-control-feedback" *ngIf="bulkForm.controls.bulkProperties.errors"></span>
+                  <p class="help-block" *ngIf="bulkForm.controls.bulkProperties.errors">The format of your deployment properties is invalid. {{bulkForm.controls.bulkProperties.errors.validateProperties.reason}}</p>
+                </div>
               </div>
-            </form>
-          </tab>
-        </tabs>
-      </div>
+              <div class="form-group">
+                <label class="col-sm-6 control-label">Select Properties File</label>
+                <div class="col-sm-14">
+                  <input type="file" (change)="displayFileContents($event)"/>
+                  <p class="help-block">Please provide a text file containing {{titleText}}. This will be used to populate the text area above.</p>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+              <button class="btn btn-primary" [disabled]="!bulkForm.valid">Set</button>
+            </div>
+          </form>
+        </app-tab>
+      </app-tabs>
 
     </div>
   </div>
