@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { HttpModule } from '@angular/http';
 
@@ -13,6 +13,8 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { TriStateCheckboxComponent } from './components/tri-state-checkbox.component';
 import { TriStateButtonComponent } from './components/tri-state-button.component';
 import { KeyValuePipe } from "./pipes/key-value-filter.pipe";
+import {PropertyTableComponent, Tab, Tabs} from './components/property-table/property-table.component';
+import {ModalModule} from "ngx-bootstrap";
 
 const busyConfig: BusyConfig = {
     message: 'Processing..',
@@ -25,7 +27,7 @@ const busyConfig: BusyConfig = {
 
 /**
  * This module contains/declares all application-wide shared functionality.
- * 
+ *
  * @author Gunnar Hillert
  * @author Ilayaperumal Gopinathan
  */
@@ -34,13 +36,17 @@ const busyConfig: BusyConfig = {
     CommonModule,
     FormsModule,
     HttpModule,
+    ReactiveFormsModule,
     BusyModule.forRoot(busyConfig),
+    ModalModule.forRoot(),
     ToastyModule.forRoot() ],
   declarations: [
     CapitalizePipe,
     KeyValuePipe,
     TriStateButtonComponent,
-    TriStateCheckboxComponent],
+    TriStateCheckboxComponent,
+    PropertyTableComponent,
+    Tabs, Tab],
   providers: [
     StompService,
     ErrorHandler],
@@ -52,7 +58,8 @@ const busyConfig: BusyConfig = {
     CapitalizePipe,
     KeyValuePipe,
     TriStateCheckboxComponent,
-    TriStateButtonComponent
+    TriStateButtonComponent,
+    PropertyTableComponent
   ]
 })
 export class SharedModule { }

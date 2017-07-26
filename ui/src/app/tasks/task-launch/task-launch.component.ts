@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TasksService } from '../tasks.service';
+import { PropertyTableComponent } from '../../shared/components/property-table/property-table.component';
 
 @Component({
   selector: 'app-task-launch',
@@ -10,6 +11,7 @@ export class TaskLaunchComponent implements OnInit, OnDestroy {
 
   id: string;
   private sub: any;
+  private taskArguments: PropertyTableComponent;
 
   constructor(
     private tasksService: TasksService,
