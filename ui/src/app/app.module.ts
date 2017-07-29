@@ -14,6 +14,28 @@ import { TasksModule } from './tasks/tasks.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {SearchModule} from './search/search.module';
+import {CurrentSearch} from './search/model/current-search';
+import {Store, StoreModule, ActionReducer, Action} from '@ngrx/store';
+import {SearchService} from './search/search.service';
+import {SearchBoxComponent} from './search/search-box/search-box.component';
+import {SearchAction} from './search/search-action';
+
+const SearchReducer: ActionReducer<CurrentSearch> = (state: CurrentSearch, action: SearchAction) => {
+  console.log('reducer', state, action);
+  switch (action.type) {
+    case SearchBoxComponent.StoreEvents.text:
+      console.log('return StoreEvents', state);
+      return Object.assign({}, state, {
+        name: action.payload
+      });
+    default:
+      console.log('return default', state);
+      return state;
+  }
+}
+// const storeManager = StoreModule.forRoot({ currentSearch: SearchReducer });
+const storeManager = StoreModule.forRoot({ SearchReducer });
 
 @NgModule({
   declarations: [
@@ -30,8 +52,12 @@ import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
     RuntimeAppsModule,
     SharedModule,
     StreamsModule,
-    TasksModule
+    TasksModule,
+    SearchModule,
+    StoreModule,
+    storeManager
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: [SearchService]
 })
 export class AppModule { }
