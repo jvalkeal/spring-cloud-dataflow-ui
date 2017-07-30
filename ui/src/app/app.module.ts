@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
 
 /* Feature Modules */
 import { AboutModule } from './about/about.module';
@@ -17,9 +16,6 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SearchModule } from './search/search.module';
 import { SearchService } from './search/search.service';
-import { SearchReducer } from './search/reducer/search.reducer';
-
-const storeManager = StoreModule.forRoot({ currentSearch: SearchReducer });
 
 @NgModule({
   declarations: [
@@ -37,9 +33,7 @@ const storeManager = StoreModule.forRoot({ currentSearch: SearchReducer });
     SharedModule,
     StreamsModule,
     TasksModule,
-    SearchModule,
-    StoreModule,
-    storeManager
+    SearchModule
   ],
   bootstrap: [AppComponent],
   providers: [SearchService]
