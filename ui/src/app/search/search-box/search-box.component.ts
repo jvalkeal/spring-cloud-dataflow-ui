@@ -30,16 +30,22 @@ export class SearchBoxComponent implements OnInit {
   private searchResults: SearchResult[] = [];
 
   constructor(private elementRef: ElementRef,
-              private store: Store<CurrentSearch>,
+              private store: Store<any>,
+              // private store: Store<CurrentSearch>,
               private searchService: SearchService) {
-    this.currentSearch = this.store.select<CurrentSearch>(s => {
-      return s;
+    // this.currentSearch = this.store.select<CurrentSearch>(s => {
+    //   console.log('SELECT', s);
+    //   return s;
+    // });
+    this.currentSearch = this.store.select<any>(s => {
+      console.log('SELECT', s);
+      return s.currentSearch;
     });
     this.searchService.searchResults.subscribe(
       (results: SearchResult[]) => {
         if (results) {
           results.forEach(r => {
-            console.log('XXX', r.id, r.title);
+            console.log('RESULT', r.id, r.title);
           });
         }
         this.searchResults = results;
@@ -52,7 +58,7 @@ export class SearchBoxComponent implements OnInit {
       .debounceTime(500)
       .subscribe((text: string) => {
         console.log('SEARCH', text);
-        this.store.dispatch(new SearchAction(SearchBoxComponent.StoreEvents.text));
+        this.store.dispatch(new SearchAction(SearchBoxComponent.StoreEvents.text, text));
       });
 
     this.currentSearch.subscribe((state: CurrentSearch) => {

@@ -19,7 +19,7 @@ import { SearchModule } from './search/search.module';
 import { SearchService } from './search/search.service';
 import { SearchReducer } from './search/reducer/search.reducer';
 
-const storeManager = StoreModule.forRoot({ SearchReducer });
+const storeManager = StoreModule.forRoot({ currentSearch: SearchReducer });
 
 @NgModule({
   declarations: [

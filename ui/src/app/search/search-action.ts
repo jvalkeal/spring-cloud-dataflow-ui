@@ -8,9 +8,10 @@ import {Action} from '@ngrx/store';
 export class SearchAction implements Action {
 
   type: string;
-  payload = 'payloadxxx'
+  payload: string;
 
-  constructor(type: string) {
+  constructor(type: string, payload: string) {
     this.type = type;
+    this.payload = payload
   }
 }
