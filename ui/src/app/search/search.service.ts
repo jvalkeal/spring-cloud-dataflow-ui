@@ -17,17 +17,16 @@ export class SearchService {
   constructor(private http: Http) { }
 
   search(query: CurrentSearch): Observable<SearchResult[]> {
-    console.log('QUERY1', query);
-    // console.log('QUERY2', query.name);
+    console.log('QUERY', query);
     this.http.get('/tasks/definitions')
       .map((response: Response) => {
         const body = response.json();
-        if (body._embedded && body._embedded.taskDefinitionResourceList) {
-          return body._embedded.taskDefinitionResourceList.map(jsonItem => {
-            return {id: 'id', title: jsonItem.name};
-          });
-        } else {
-          return Observable.empty();
+        if (query && body._embedded && body._embedded.taskDefinitionResourceList) {
+          return body._embedded.taskDefinitionResourceList
+            .filter(jsonItem => query.name && jsonItem.name.includes(query.name))
+            .map(jsonItem => {
+              return {id: 'id', title: jsonItem.name};
+            });
         }
       })
       .subscribe((results: SearchResult[]) => this.searchResults.next(results));
