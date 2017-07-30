@@ -1,1 +1,4 @@
 <input type="text" class="form-control" placeholder="Search" autofocus>
+<div class="search-box-dropdown">
+  <div *ngFor="let result of searchResults">{{result.title}}</div>
+</div>

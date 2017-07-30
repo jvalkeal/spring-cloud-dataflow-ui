@@ -17,8 +17,6 @@ export class SearchService {
   constructor(private http: Http) { }
 
   search(query: CurrentSearch): Observable<SearchResult[]>  {
-    console.log('search', query);
-
     this.http.get('/tasks/definitions')
       .map((response: Response) => {
         const body = response.json();
