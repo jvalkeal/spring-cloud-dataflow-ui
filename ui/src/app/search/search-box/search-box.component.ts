@@ -4,7 +4,10 @@ import {Store} from '@ngrx/store';
 import {SearchAction} from '../search-action';
 
 /**
- * xxx
+ * Component providing functionality to enter text which using
+ * a search service will asynchronously query search results and
+ * shows those in a drop-down list. These results will provide
+ * a links to appropriate items in UI.
  *
  * @author Janne Valkealahti
  */

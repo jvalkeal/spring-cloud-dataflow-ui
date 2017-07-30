@@ -18,9 +18,33 @@ export class SearchService {
 
   search(query: CurrentSearch): Observable<SearchResult[]>  {
     console.log('search', query);
-    const ss: SearchResult[] = [];
-    ss.push({id: 'id', title: 'title'});
-    this.searchResults.next(ss);
+
+    this.http.get('/tasks/definitions')
+      .map((response: Response) => {
+        const body = response.json();
+        if (body._embedded && body._embedded.taskDefinitionResourceList) {
+          return body._embedded.taskDefinitionResourceList.map(jsonItem => {
+            return {id: 'id', title: jsonItem.name};
+          });
+        } else {
+          return Observable.empty();
+        }
+      })
+      .subscribe((results: SearchResult[]) => this.searchResults.next(results));
+
+    // this.http.get('/apps')
+    //   .map((response: Response) => {
+    //     const body = response.json();
+    //     if (body._embedded && body._embedded.appRegistrationResourceList) {
+    //       return body._embedded.appRegistrationResourceList.map(jsonItem => {
+    //         return {id: 'id', title: jsonItem.name};
+    //       });
+    //     } else {
+    //       return Observable.empty();
+    //     }
+    //   })
+    //   .subscribe((results: SearchResult[]) => this.searchResults.next(results));
+
     return this.searchResults;
   }
 

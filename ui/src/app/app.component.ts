@@ -31,10 +31,10 @@ export class AppComponent implements OnInit {
     });
     this.searchService.searchResults.subscribe(
       (results: SearchResult[]) => {
-        // console.log('SearchResult', results);
+        console.log('XXX1');
         if (results) {
           results.forEach(r => {
-            console.log('XXX', r.id, r.title);
+            console.log('XXX2', r.id, r.title);
           });
         }
         this.searchResults = results;
