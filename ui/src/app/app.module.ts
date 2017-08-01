@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 
 /* Feature Modules */
 import { AboutModule } from './about/about.module';
@@ -13,7 +15,8 @@ import { TasksModule } from './tasks/tasks.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SearchModule } from './search/search.module';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,10 @@ import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
     RuntimeAppsModule,
     SharedModule,
     StreamsModule,
-    TasksModule
+    TasksModule,
+    SearchModule,
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([])
   ],
   bootstrap: [AppComponent]
 })
