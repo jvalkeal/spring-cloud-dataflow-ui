@@ -8,7 +8,7 @@ import { SearchReducer } from './reducer/search.reducer';
 import { SearchContainerComponent } from './search-container/search-container.component';
 import { SearchDropdownComponent } from './search-dropdown/search-dropdown.component';
 import { SearchLoadingComponent } from './search-loading/search-loading.component';
-import {SearchService} from "./search.service";
+import { SearchService } from './search.service';
 
 @NgModule({
   imports: [

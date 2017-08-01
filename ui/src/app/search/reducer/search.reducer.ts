@@ -28,7 +28,7 @@ export const SearchReducer: ActionReducer<SearchState> = (state: SearchState, ac
     case SEARCH_COMPLETE:
       const items: string[] = [];
       if (action.payload) {
-        action.payload.forEach(r => items.push(r.title));
+        action.payload.forEach(r => items.push(r.name));
       }
       return Object.assign({}, state, {
         loading: false,
@@ -44,4 +44,3 @@ export const selectSearchResults = createSelector(getSearchState, (state: Search
 export const selectSearchItems = createSelector(selectSearchResults, (state: SearchResultsState) => state.items);
 export const getQuery = (state: SearchState) => state.query;
 export const selectSearchLoading = createSelector(getSearchState, (state: SearchState) => state.loading);
-// export const getLoading = (state: SearchState) => state.loading;

@@ -17,24 +17,21 @@ export class SearchEffects {
    *
    * @type {Observable<SearchCompleteAction>}
    */
-  @Effect() search$: Observable<SearchCompleteAction> = this.actions
+  @Effect()
+  search$: Observable<SearchCompleteAction> = this.actions
     .ofType(SEARCH)
     .debounceTime(500)
     .map(toPayload)
     .switchMap((payload) => this.searchService.search(payload))
     .map(results => new SearchCompleteAction(results));
 
-  @Effect({ dispatch: false }) complete$: Observable<SearchAction> = this.actions
+  @Effect({ dispatch: false })
+  complete$: Observable<SearchResult[]> = this.actions
     .ofType(SEARCH_COMPLETE)
-    .do(action => {
-      console.log('EFFECT2', action, toPayload(action));
+    .map(toPayload)
+    .do(payload => {
+      console.log('EFFECT2', payload);
     });
-    // .map(toPayload)
-    // .do(payload => {
-    //   payload.forEach(r => {
-    //     console.log('RESULT2', r.title);
-    //   });
-    // });
 
   constructor(
     private actions: Actions,

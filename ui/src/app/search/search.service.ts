@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Response, Http } from '@angular/http';
-import { Observable, BehaviorSubject } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Rx';
 import { SearchResult } from './model/search-result';
 
 /**
@@ -10,8 +10,6 @@ import { SearchResult } from './model/search-result';
  */
 @Injectable()
 export class SearchService {
-
-  searchResults: BehaviorSubject<SearchResult[]> = new BehaviorSubject<SearchResult[]>([]);
 
   constructor(private http: Http) { }
 
@@ -23,7 +21,7 @@ export class SearchService {
           return body._embedded.taskDefinitionResourceList
             .filter(jsonItem => query && jsonItem.name.includes(query))
             .map(jsonItem => {
-              return {id: 'id', title: jsonItem.name};
+              return {name: jsonItem.name};
             });
         }
       });
