@@ -37,6 +37,7 @@
     "ngx-clipboard": "^8.0.2",
     "ngx-pagination": "^3.0.1",
     "pui-css-variables-and-mixins": "^8.1.0",
+    "reflect-metadata": "^0.1.9",
     "sockjs-client": "^1.1.4",
     "stompjs": "^2.3.3"
   },
