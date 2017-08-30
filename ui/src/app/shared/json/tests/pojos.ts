@@ -1,7 +1,7 @@
-import { JsonDeserialize } from '../json-deserialize';
+import { JsonDeserializeClass } from '../json-deserialize';
 import { JsonProperty } from '../json-decorators';
 
-@JsonDeserialize.as()
+@JsonDeserializeClass()
 export class Person {
 
   @JsonProperty()
@@ -12,10 +12,21 @@ export class Person {
 
 }
 
+@JsonDeserializeClass()
 export class Pojo1 {
 
+  @JsonProperty()
+  public pojo1value1: string;
+
+  @JsonProperty()
+  public pojo1value2: string;
+
 }
 
+@JsonDeserializeClass()
 export class Pojo2 extends Pojo1 {
 
+  @JsonProperty()
+  public pojo2value1: string;
 }
+

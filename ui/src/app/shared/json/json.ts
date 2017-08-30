@@ -7,20 +7,20 @@ export class Json {
     return this.deserialize<T>(JSON.parse(json), type);
   }
 
-  public static deserialize<T>(object:any, type?:Function):T {
+  public static deserialize<T>(object: any, type?: Function): T {
     return deserialize(object, type);
   }
 
-  public static stringify(object:any):string {
+  public static stringify(object: any): string {
     return JSON.stringify(this.serialize(object));
   }
 
-  public static serialize(value:any):any {
+  public static serialize(value: any): any {
     return serialize(value);
   }
 }
 
-export function deserialize(object:JsonValue, type?:Function):any {
+export function deserialize(object: JsonValue, type?: Function): any {
   if (object && object.constructor === Array) {
     return (object as JsonValueArray).map(o => deserializeRootObject(o, type));
   }

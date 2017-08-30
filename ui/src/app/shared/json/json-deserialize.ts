@@ -1,11 +1,13 @@
-export class JsonDeserialize {
 
-  public static as(): ClassDecorator {
-    return function (target: Function): void {
-      getDefinition(target);
-    }
+export function JsonDeserializeClass(params?: JsonDeserializeClassParams): ClassDecorator {
+  return function (target: Function): void {
+    getDefinition(target);
   }
 }
+
+export interface JsonDeserializeClassParams {
+}
+
 
 export class ObjectDefinition {
 
