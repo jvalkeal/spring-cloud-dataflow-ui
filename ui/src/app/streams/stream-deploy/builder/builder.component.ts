@@ -118,6 +118,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     const deployers: FormArray = this.refBuilder.formGroup.get('deployers') as FormArray;
     const appsVersion: FormGroup = this.refBuilder.formGroup.get('appsVersion') as FormGroup;
     const global: FormArray = this.refBuilder.formGroup.get('global') as FormArray;
+    const definedPlatform: FormArray = this.refBuilder.formGroup.get('definedPlatform') as FormArray;
     const specificPlatform: FormArray = this.refBuilder.formGroup.get('specificPlatform') as FormArray;
 
     // Platform
@@ -322,7 +323,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     const builderAppsProperties = {};
 
     // Platform
-    formGroup.addControl('platform', new FormControl(getValue(streamDeployConfig.platform.defaultValue),
+    const platformControl = new FormControl(getValue(streamDeployConfig.platform.defaultValue),
       (formControl: FormControl) => {
         if (this.isErrorPlatform(streamDeployConfig.platform.values, formControl.value)) {
           return { invalid: true };
@@ -331,7 +332,21 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
           return { invalid: true };
         }
         return null;
-      }));
+      });
+    // platformControl.valueChanges.subscribe((value) => {
+    //   console.log('XXX ', value);
+    // });
+    formGroup.addControl('platform', platformControl);
+    // formGroup.addControl('platform', new FormControl(getValue(streamDeployConfig.platform.defaultValue),
+    //   (formControl: FormControl) => {
+    //     if (this.isErrorPlatform(streamDeployConfig.platform.values, formControl.value)) {
+    //       return { invalid: true };
+    //     }
+    //     if (streamDeployConfig.platform.values.length > 1 && !formControl.value) {
+    //       return { invalid: true };
+    //     }
+    //     return null;
+    //   }));
 
     // Deployers
     const deployers = new FormArray([]);
@@ -417,6 +432,33 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       clean(val, globalControls);
     });
 
+    // Defined Platform properties
+    const addDefined = (array: FormArray, platformName: String) => {
+      // first clear what we have in forms
+      while (array.length !== 0) {
+        array.removeAt(0);
+      }
+      const platform = streamDeployConfig.platform.values.find(p => p.name === platformName);
+      if (platform) {
+        platform.options.forEach(o => {
+          const group = new FormGroup({
+            'property': new FormControl({value: o.name, disabled: true}, [StreamDeployValidator.key]),
+            'global': new FormControl('')
+          }, { validators: StreamDeployValidator.keyRequired });
+
+          streamDeployConfig.apps.forEach((app) => {
+            group.addControl(app.name, new FormControl(''));
+          });
+          array.push(group);
+        });
+      }
+    };
+    const definedPlatformControls: FormArray = new FormArray([]);
+    platformControl.valueChanges.subscribe((value) => {
+      // reset platform related deploy properties when new plaform is chosen
+      addDefined(definedPlatformControls, value);
+    });
+
     // Dynamic Platform properties
     const specificPlatformControls: FormArray = new FormArray([]);
     add(specificPlatformControls);
@@ -427,6 +469,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     formGroup.addControl('deployers', deployers);
     formGroup.addControl('appsVersion', appsVersion);
     formGroup.addControl('global', globalControls);
+    formGroup.addControl('definedPlatform', definedPlatformControls);
     formGroup.addControl('specificPlatform', specificPlatformControls);
 
     return {

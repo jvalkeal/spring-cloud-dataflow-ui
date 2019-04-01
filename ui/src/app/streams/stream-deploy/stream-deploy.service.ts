@@ -150,7 +150,8 @@ export class StreamDeployService {
             return {
               key: platform.name,
               name: platform.name,
-              type: platform.type
+              type: platform.type,
+              options: platform.options
             };
           })
         };

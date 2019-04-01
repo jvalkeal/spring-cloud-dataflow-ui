@@ -96,6 +96,26 @@
 
             <!-- 6 -->
             <div *ngIf="state.specificPlatform"
+                 formArrayName="definedPlatform">
+              <div class="line-body" *ngFor="let f of builder.formGroup.get('definedPlatform').controls;let i = index"
+                   [formGroupName]="i"
+                   [class.has-error]="builder.formGroup.get('definedPlatform').controls[i].get('property').invalid">
+                <div class="status" *ngIf="builder.formGroup.get('definedPlatform').controls[i].invalid">
+                  <div tooltipPlacement="right"
+                       [tooltip]="tooltipTemplate"
+                       class="fa fa-warning"></div>
+
+                  <ng-template #tooltipTemplate>
+                    <div
+                      [innerHtml]="tooltip(builder.streamDeployConfig, builder.formGroup.get('definedPlatform').controls[i])"></div>
+                  </ng-template>
+                </div>
+
+                <input tabindex="{{ 50 + i }}" placeholder="Enter a value" class="form-control"
+                       formControlName="property" type="text"/>
+              </div>
+            </div>
+            <div *ngIf="state.specificPlatform"
                  formArrayName="specificPlatform">
               <div class="line-body" *ngFor="let f of builder.formGroup.get('specificPlatform').controls;let i = index"
                    [formGroupName]="i"
@@ -219,6 +239,15 @@
 
             <!-- 6 -->
             <div *ngIf="state.specificPlatform"
+                 formArrayName="definedPlatform">
+              <div class="line-body" *ngFor="let f of builder.formGroup.get('definedPlatform').controls;let i = index"
+                   [formGroupName]="i"
+                   [class.has-error]="builder.formGroup.get('definedPlatform').controls[i].get('global').invalid">
+                <input tabindex="{{ 50 + i }}" placeholder="Enter a value" class="form-control" formControlName="global"
+                       type="text"/>
+              </div>
+            </div>
+            <div *ngIf="state.specificPlatform"
                  formArrayName="specificPlatform">
               <div class="line-body" *ngFor="let f of builder.formGroup.get('specificPlatform').controls;let i = index"
                    [formGroupName]="i"
@@ -287,6 +316,16 @@
               <div class="line-toggle"></div>
 
               <!-- 6 -->
+              <div *ngIf="state.specificPlatform"
+                   formArrayName="definedPlatform">
+                <div class="line-body"
+                     *ngFor="let f of builder.formGroup.get('definedPlatform').controls;let i = index"
+                     [formGroupName]="i"
+                     [class.has-error]="builder.formGroup.get('definedPlatform').controls[i].get(app.name).invalid">
+                  <input tabindex="{{ 50 + i }}" placeholder="Enter a value" class="form-control"
+                         [formControlName]="app.name" type="text"/>
+                </div>
+              </div>
               <div *ngIf="state.specificPlatform"
                    formArrayName="specificPlatform">
                 <div class="line-body"
