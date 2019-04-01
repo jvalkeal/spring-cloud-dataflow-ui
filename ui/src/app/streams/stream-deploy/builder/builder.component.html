@@ -340,12 +340,40 @@
               <div class="line-toggle"></div>
 
               <!-- 6 -->
+
+
+<!--
+-->
+              <div *ngIf="builder.builderDeploymentProperties.apps[app.name] &&
+                          builder.builderDeploymentProperties.apps[app.name].length > 0"
+                   class="form-control form-control-label">
+                <strong>{{ getDeploymentProperties(builder.builderDeploymentProperties, app.name).length }}</strong>
+                <span> /</span> {{ builder.builderDeploymentProperties.apps[app.name].length }} properties
+                <button tabindex="{{ 101 }}" type="button" (click)="openDeploymentProperties(builder, app.name)"
+                    class="btn btn-primary">
+                  <span class="fa fa-pencil"></span>
+                </button>
+              </div>
+
               <div class="line-body" *ngIf="state.specificPlatform">
-                <div
+
+                <div *ngIf="!builder.builderDeploymentProperties.apps[app.name] ||
+                            (builder.builderDeploymentProperties.apps[app.name] &&
+                            builder.builderDeploymentProperties.apps[app.name].length === 0)"
                      class="form-control form-control-label">
                   <strong>No properties</strong>
                 </div>
               </div>
+
+
+              <!--<div class="line-body" *ngIf="state.specificPlatform">-->
+                <!--<div-->
+                     <!--class="form-control form-control-label">-->
+                  <!--<strong>No properties</strong>-->
+                <!--</div>-->
+              <!--</div>-->
+
+
               <!--<div *ngIf="state.specificPlatform"-->
                    <!--formArrayName="definedPlatform">-->
                 <!--<div class="line-body"-->

@@ -359,7 +359,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
 
     const getValue = (defaultValue) => !defaultValue ? '' : defaultValue;
     const builderAppsProperties = {};
-    const builderDeploymentProperties = {global: []};
+    const builderDeploymentProperties = {global: [], apps: {}};
 
     // Platform
     const platformControl = new FormControl(getValue(streamDeployConfig.platform.defaultValue),
@@ -375,10 +375,16 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
 
     platformControl.valueChanges.subscribe((value) => {
       builderDeploymentProperties.global = [];
+      streamDeployConfig.apps.forEach((app: any) => {
+        builderDeploymentProperties.apps[app.name] = [];
+      });
       const platform = streamDeployConfig.platform.values.find(p => p.name === value);
       if (platform) {
         platform.options.forEach(o => {
           builderDeploymentProperties.global.push(o);
+          streamDeployConfig.apps.forEach((app: any) => {
+            builderDeploymentProperties.apps[app.name].push(o);
+          });
         });
       }
     });
@@ -574,7 +580,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     return arr.join('<br />');
   }
 
-  getDeploymentProperties(builderDeploymentProperties: {}): Array<{ key: string, value: string }> {
+  getDeploymentProperties2(builderDeploymentProperties: {}): Array<{ key: string, value: string }> {
     const deploymentProperties = builderDeploymentProperties.global;
     if (!deploymentProperties) {
       return [];
@@ -592,7 +598,44 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     }).filter((app) => app !== null);
   }
 
-  openDeploymentProperties(builder) {
+  getDeploymentProperties(builderDeploymentProperties: {}, appId: string): Array<{ key: string, value: string }> {
+    const deploymentProperties = appId ? builderDeploymentProperties.apps[appId] : builderDeploymentProperties.global;
+    if (!deploymentProperties) {
+      return [];
+    }
+
+    return deploymentProperties.map((property: Properties.Property) => {
+      if (property.value && property.value !== undefined && property.value.toString() !== ''
+        && property.value !== property.defaultValue) {
+        return {
+          key: `${property.id}`,
+          value: property.value
+        };
+      }
+      return null;
+    }).filter((app) => app !== null);
+  }
+
+  openDeploymentProperties(builder, appId: string) {
+    const modal = this.bsModalService.show(StreamDeployAppPropertiesComponent);
+    const options = appId ? builder.builderDeploymentProperties.apps[appId] : builder.builderDeploymentProperties.global;
+    modal.content.title = `Properties for deployer`;
+
+    const appPropertiesSource = new AppPropertiesSource(Object.assign([], options
+      .map((property) => Object.assign({}, property))));
+
+    appPropertiesSource.confirm.subscribe((properties: Array<any>) => {
+      if (appId) {
+        builder.builderDeploymentProperties.apps[appId] = properties;
+      } else {
+        builder.builderDeploymentProperties.global = properties;
+      }
+      this.changeDetector.markForCheck();
+    });
+    modal.content.setData(appPropertiesSource);
+  }
+
+  openDeploymentProperties2(builder, appId: string) {
     const modal = this.bsModalService.show(StreamDeployAppPropertiesComponent);
     // const options = builder.builderAppsProperties[app.name] ? builder.builderAppsProperties[app.name] : app.options;
     const options = builder.builderDeploymentProperties.global;
