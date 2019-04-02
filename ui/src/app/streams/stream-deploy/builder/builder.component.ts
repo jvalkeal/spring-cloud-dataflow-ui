@@ -163,7 +163,6 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       // App deployment props via dialog
       this.getDeploymentProperties(this.refBuilder.builderDeploymentProperties, app.name).forEach((keyValue) => {
         result.push(`deployer.${app.name}.${keyValue.key.replace(/spring.cloud.deployer./, '')}=${keyValue.value}`);
-        // deployer.<appname>.spring.cloud.deployer.local.maximum-concurrent-tasks=11
       });
     });
 
@@ -177,7 +176,6 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     // Global deployment props via dialog
     this.getDeploymentProperties(this.refBuilder.builderDeploymentProperties).forEach((keyValue) => {
       result.push(`deployer.*.${keyValue.key.replace(/spring.cloud.deployer./, '')}=${keyValue.value}`);
-      // deployer.*.spring.cloud.deployer.local.maximum-concurrent-tasks=11
     });
 
     // Errors
@@ -302,12 +300,6 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
               builder.builderDeploymentProperties.apps[app.name].push(Object.assign({}, o));
             });
           });
-          // platform.options.forEach(o => {
-          //   builder.builderDeploymentProperties.global.push(o);
-          //   builder.streamDeployConfig.apps.forEach((app: any) => {
-          //     builder.builderDeploymentProperties.apps[app.name].push(o);
-          //   });
-          // });
         }
       }
     });
@@ -403,10 +395,6 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       streamDeployConfig.apps.forEach((app: any) => {
         builderDeploymentProperties.apps[app.name] = [];
       });
-      // XXX
-
-      // const appPropertiesSource = new AppPropertiesSource(Object.assign([], options
-      //   .map((property) => Object.assign({}, property))));
 
       const platform = streamDeployConfig.platform.values.find(p => p.name === value);
       if (platform) {
@@ -417,26 +405,8 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
           });
         });
       }
-      // if (platform) {
-      //   platform.options.forEach(o => {
-      //     builderDeploymentProperties.global.push(o);
-      //     streamDeployConfig.apps.forEach((app: any) => {
-      //       builderDeploymentProperties.apps[app.name].push(o);
-      //     });
-      //   });
-      // }
     });
     formGroup.addControl('platform', platformControl);
-    // formGroup.addControl('platform', new FormControl(getValue(streamDeployConfig.platform.defaultValue),
-    //   (formControl: FormControl) => {
-    //     if (this.isErrorPlatform(streamDeployConfig.platform.values, formControl.value)) {
-    //       return { invalid: true };
-    //     }
-    //     if (streamDeployConfig.platform.values.length > 1 && !formControl.value) {
-    //       return { invalid: true };
-    //     }
-    //     return null;
-    //   }));
 
     // Deployers
     const deployers = new FormArray([]);
@@ -618,25 +588,8 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     return arr.join('<br />');
   }
 
-  getDeploymentProperties2(builderDeploymentProperties: {}): Array<{ key: string, value: string }> {
-    const deploymentProperties = builderDeploymentProperties.global;
-    if (!deploymentProperties) {
-      return [];
-    }
-
-    return deploymentProperties.map((property: Properties.Property) => {
-      if (property.value && property.value !== undefined && property.value.toString() !== ''
-        && property.value !== property.defaultValue) {
-        return {
-          key: `${property.id}`,
-          value: property.value
-        };
-      }
-      return null;
-    }).filter((app) => app !== null);
-  }
-
-  getDeploymentProperties(builderDeploymentProperties: {}, appId: string): Array<{ key: string, value: string }> {
+  getDeploymentProperties(builderDeploymentProperties: {global: [], apps: {}}, appId?: string): Array<{ key: string, value: string }> {
+    // const deploymentProperties = appId ? builderDeploymentProperties.apps[appId] : builderDeploymentProperties.global;
     const deploymentProperties = appId ? builderDeploymentProperties.apps[appId] : builderDeploymentProperties.global;
     if (!deploymentProperties) {
       return [];
@@ -654,7 +607,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     }).filter((app) => app !== null);
   }
 
-  openDeploymentProperties(builder, appId: string) {
+  openDeploymentProperties(builder, appId?: string) {
     const modal = this.bsModalService.show(StreamDeployAppPropertiesComponent);
     const options = appId ? builder.builderDeploymentProperties.apps[appId] : builder.builderDeploymentProperties.global;
     modal.content.title = `Properties for deployer`;
@@ -668,22 +621,6 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       } else {
         builder.builderDeploymentProperties.global = properties;
       }
-      this.changeDetector.markForCheck();
-    });
-    modal.content.setData(appPropertiesSource);
-  }
-
-  openDeploymentProperties2(builder, appId: string) {
-    const modal = this.bsModalService.show(StreamDeployAppPropertiesComponent);
-    // const options = builder.builderAppsProperties[app.name] ? builder.builderAppsProperties[app.name] : app.options;
-    const options = builder.builderDeploymentProperties.global;
-    modal.content.title = `Properties for deployer`;
-
-    const appPropertiesSource = new AppPropertiesSource(Object.assign([], options
-      .map((property) => Object.assign({}, property))));
-
-    appPropertiesSource.confirm.subscribe((properties: Array<any>) => {
-      builder.builderDeploymentProperties.global = properties;
       this.changeDetector.markForCheck();
     });
     modal.content.setData(appPropertiesSource);
