@@ -160,6 +160,11 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       if (!isEmpty(appsVersion.get(app.name))) {
         result.push(`version.${app.name}=${appsVersion.get(app.name).value}`);
       }
+      // App deployment props via dialog
+      this.getDeploymentProperties(this.refBuilder.builderDeploymentProperties, app.name).forEach((keyValue) => {
+        result.push(`deployer.${app.name}.${keyValue.key.replace(/spring.cloud.deployer./, '')}=${keyValue.value}`);
+        // deployer.<appname>.spring.cloud.deployer.local.maximum-concurrent-tasks=11
+      });
     });
 
     // Apps Properties
@@ -287,10 +292,22 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
         builder.formGroup.get('platform').setValue(value);
         const platform = builder.streamDeployConfig.platform.values.find(p => p.name === value);
         builder.builderDeploymentProperties.global = [];
+        builder.streamDeployConfig.apps.forEach((app: any) => {
+          builder.builderDeploymentProperties.apps[app.name] = [];
+        });
         if (platform) {
           platform.options.forEach(o => {
-            builder.builderDeploymentProperties.global.push(o);
+            builder.builderDeploymentProperties.global.push(Object.assign({}, o));
+            builder.streamDeployConfig.apps.forEach((app: any) => {
+              builder.builderDeploymentProperties.apps[app.name].push(Object.assign({}, o));
+            });
           });
+          // platform.options.forEach(o => {
+          //   builder.builderDeploymentProperties.global.push(o);
+          //   builder.streamDeployConfig.apps.forEach((app: any) => {
+          //     builder.builderDeploymentProperties.apps[app.name].push(o);
+          //   });
+          // });
         }
       }
     });
@@ -301,7 +318,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       const value = arr[1] as string;
       const appKey = key.split('.')[1];
       if (StreamDeployService.platform.is(key)) {
-        builder.formGroup.get('platform').setValue(value);
+        // builder.formGroup.get('platform').setValue(value);
       } else if (StreamDeployService.deployer.is(key)) {
         // Deployer
         const keyReduce = StreamDeployService.deployer.extract(key);
@@ -314,15 +331,23 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
               .controls[deployerKeys.indexOf(keyReduce)]
               .get(appKey === '*' ? 'global' : appKey).setValue(value);
           } else {
-            const deploymentPropertiesKeys: Array<string> = builder.builderDeploymentProperties.global.map(p => p.id);
             const keymatch = 'spring.cloud.deployer.' + keyReduce;
-            const match = false;
-            builder.builderDeploymentProperties.global.forEach(p => {
-              if (keymatch === p.id) {
-                match = true;
-                p.value = value;
-              }
-            });
+            let match = false;
+            if (key.indexOf('deployer.*.') > -1) {
+              builder.builderDeploymentProperties.global.forEach(p => {
+                if (keymatch === p.id) {
+                  match = true;
+                  p.value = value;
+                }
+              });
+            } else if (key.indexOf('deployer.' + appKey + '.') > -1) {
+              builder.builderDeploymentProperties.apps[appKey].forEach(p => {
+                if (keymatch === p.id) {
+                  match = true;
+                  p.value = value;
+                }
+              });
+            }
 
             if (!match) {
               this.updateFormArray(builder, builder.formGroup.get('specificPlatform') as FormArray, appKey,
@@ -378,15 +403,28 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       streamDeployConfig.apps.forEach((app: any) => {
         builderDeploymentProperties.apps[app.name] = [];
       });
+      // XXX
+
+      // const appPropertiesSource = new AppPropertiesSource(Object.assign([], options
+      //   .map((property) => Object.assign({}, property))));
+
       const platform = streamDeployConfig.platform.values.find(p => p.name === value);
       if (platform) {
         platform.options.forEach(o => {
-          builderDeploymentProperties.global.push(o);
+          builderDeploymentProperties.global.push(Object.assign({}, o));
           streamDeployConfig.apps.forEach((app: any) => {
-            builderDeploymentProperties.apps[app.name].push(o);
+            builderDeploymentProperties.apps[app.name].push(Object.assign({}, o));
           });
         });
       }
+      // if (platform) {
+      //   platform.options.forEach(o => {
+      //     builderDeploymentProperties.global.push(o);
+      //     streamDeployConfig.apps.forEach((app: any) => {
+      //       builderDeploymentProperties.apps[app.name].push(o);
+      //     });
+      //   });
+      // }
     });
     formGroup.addControl('platform', platformControl);
     // formGroup.addControl('platform', new FormControl(getValue(streamDeployConfig.platform.defaultValue),

@@ -344,18 +344,17 @@
 
 <!--
 -->
-              <div *ngIf="builder.builderDeploymentProperties.apps[app.name] &&
-                          builder.builderDeploymentProperties.apps[app.name].length > 0"
-                   class="form-control form-control-label">
-                <strong>{{ getDeploymentProperties(builder.builderDeploymentProperties, app.name).length }}</strong>
-                <span> /</span> {{ builder.builderDeploymentProperties.apps[app.name].length }} properties
-                <button tabindex="{{ 101 }}" type="button" (click)="openDeploymentProperties(builder, app.name)"
-                    class="btn btn-primary">
-                  <span class="fa fa-pencil"></span>
-                </button>
-              </div>
-
               <div class="line-body" *ngIf="state.specificPlatform">
+                <div *ngIf="builder.builderDeploymentProperties.apps[app.name] &&
+                            builder.builderDeploymentProperties.apps[app.name].length > 0"
+                     class="form-control form-control-label">
+                  <strong>{{ getDeploymentProperties(builder.builderDeploymentProperties, app.name).length }}</strong>
+                  <span> /</span> {{ builder.builderDeploymentProperties.apps[app.name].length }} properties
+                  <button tabindex="{{ 101 }}" type="button" (click)="openDeploymentProperties(builder, app.name)"
+                      class="btn btn-primary">
+                    <span class="fa fa-pencil"></span>
+                  </button>
+                </div>
 
                 <div *ngIf="!builder.builderDeploymentProperties.apps[app.name] ||
                             (builder.builderDeploymentProperties.apps[app.name] &&
