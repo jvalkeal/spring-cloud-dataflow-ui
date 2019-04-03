@@ -161,7 +161,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       if (!isEmpty(appsVersion.get(app.name))) {
         result.push(`version.${app.name}=${appsVersion.get(app.name).value}`);
       }
-      // App deployment props via dialog
+      // App deployment props set via modal
       this.getDeploymentProperties(this.refBuilder.builderDeploymentProperties, app.name).forEach((keyValue) => {
         result.push(`deployer.${app.name}.${keyValue.key.replace(/spring.cloud.deployer./, '')}=${keyValue.value}`);
       });
@@ -174,7 +174,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       });
     });
 
-    // Global deployment props via dialog
+    // Global deployment props set via modal
     this.getDeploymentProperties(this.refBuilder.builderDeploymentProperties).forEach((keyValue) => {
       result.push(`deployer.*.${keyValue.key.replace(/spring.cloud.deployer./, '')}=${keyValue.value}`);
     });
@@ -325,6 +325,9 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
               .get(appKey === '*' ? 'global' : appKey).setValue(value);
           } else {
             const keymatch = 'spring.cloud.deployer.' + keyReduce;
+            // go through deployment properties for global and apps and
+            // mark match if it looks property is handled by modal, otherwise
+            // it belong to form array
             let match = false;
             if (key.indexOf('deployer.*.') > -1) {
               builder.builderDeploymentProperties.global.forEach(p => {
@@ -390,7 +393,6 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
         }
         return null;
       });
-
     platformControl.valueChanges.subscribe((value) => {
       builderDeploymentProperties.global = [];
       streamDeployConfig.apps.forEach((app: any) => {
@@ -589,8 +591,14 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     return arr.join('<br />');
   }
 
+  /**
+   * Load the deployment properties of an app or global
+   *
+   * @param {{}} builderDeploymentProperties
+   * @param {string} appId
+   * @returns {Array}
+   */
   getDeploymentProperties(builderDeploymentProperties: {global: [], apps: {}}, appId?: string): Array<{ key: string, value: string }> {
-    // const deploymentProperties = appId ? builderDeploymentProperties.apps[appId] : builderDeploymentProperties.global;
     const deploymentProperties = appId ? builderDeploymentProperties.apps[appId] : builderDeploymentProperties.global;
     if (!deploymentProperties) {
       return [];
@@ -608,6 +616,13 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     }).filter((app) => app !== null);
   }
 
+  /**
+   * Open Deployment Properties modal for an app or global
+   *
+   * @param builder
+   * @param {string} appId
+   * @param app
+   */
   openDeploymentProperties(builder, appId?: string) {
     const modal = this.bsModalService.show(StreamDeployAppPropertiesComponent);
     const options = appId ? builder.builderDeploymentProperties.apps[appId] : builder.builderDeploymentProperties.global;
