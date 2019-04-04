@@ -283,7 +283,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
 
     // we need to iterate twice to get a possible platform name set
     // as it's needed later and we don't control order of these properties
-    this.properties.forEach((line: string) => {
+    this.properties.some((line: string) => {
       const arr = line.split(/=(.*)/);
       const key = arr[0] as string;
       const value = arr[1] as string;
@@ -302,7 +302,10 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
             });
           });
         }
+        // got it, break from loop
+        return true;
       }
+      return false;
     });
 
     this.properties.forEach((line: string) => {
@@ -311,7 +314,8 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       const value = arr[1] as string;
       const appKey = key.split('.')[1];
       if (StreamDeployService.platform.is(key)) {
-        // builder.formGroup.get('platform').setValue(value);
+        // consume but don't do anything, otherwise error is added
+        // platform value is set in first iteration
       } else if (StreamDeployService.deployer.is(key)) {
         // Deployer
         const keyReduce = StreamDeployService.deployer.extract(key);
