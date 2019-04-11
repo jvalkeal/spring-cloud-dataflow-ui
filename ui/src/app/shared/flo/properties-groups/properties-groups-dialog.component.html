@@ -9,7 +9,7 @@
   <div class="properties"
        *ngFor="let group of propertiesGroupModels">
     <div class="line-toggle">
-      <a class="toggle" (click)="state[group.title] = !state[group.title]">
+      <a class="toggle" (click)="collapse(group.title)">
                 <span class="fa" [class.fa-chevron-down]="state[group.title]"
                       [class.fa-chevron-right]="!state[group.title]"></span>
         {{group.title}}

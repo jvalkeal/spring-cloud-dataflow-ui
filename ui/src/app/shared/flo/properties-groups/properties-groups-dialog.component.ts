@@ -44,6 +44,16 @@ export class PropertiesGroupsDialogComponent implements OnInit {
     this.bsModalRef.hide();
   }
 
+  collapse(id: string) {
+    Object.entries(this.state).forEach(e => {
+      if (e[0] === id && e[1]) {
+        this.state[e[0]] = false;
+      } else {
+        this.state[e[0]] = (e[0] === id);
+      }
+    });
+  }
+
   get okDisabled() {
     return !this.propertiesGroupModels.length > 0
       || !this.propertiesFormGroup
