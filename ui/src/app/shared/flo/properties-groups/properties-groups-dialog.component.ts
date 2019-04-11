@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, OnInit, EventEmitter} from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, EventEmitter } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 import { FormGroup } from '@angular/forms';
 import { of } from 'rxjs';
