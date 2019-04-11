@@ -45,31 +45,35 @@ label.df-property-control {
   color: $error-3;
 }
 
-.line-toggle {
-  height: 42px;
-  line-height: 42px;
-  margin-top: 4px;
-  position: relative;
+.properties {
 
-  .toggle {
-    display: block;
-    cursor: pointer;
+  .line-toggle {
+    background: #F5F6F7;
+    height: 42px;
+    line-height: 42px;
+    margin-top: 4px;
+    margin-bottom: 4px;
     position: relative;
-    padding-left: 40px;
-    margin-right: 30px;
-    color: #000;
-    .fa-chevron-right, .fa-chevron-down {
-      position: absolute;
-      top: 12px;
-      left: 15px;
-    }
-    .fa-chevron-right {
-      top: 14px;
-      left: 17px;
-    }
-    &:hover {
-      text-decoration: none;
+
+    .toggle {
+      display: block;
+      cursor: pointer;
+      position: relative;
+      padding-left: 40px;
+      margin-right: 30px;
+      color: #000;
+      .fa-chevron-right, .fa-chevron-down {
+        position: absolute;
+        top: 12px;
+        left: 15px;
+      }
+      .fa-chevron-right {
+        top: 14px;
+        left: 17px;
+      }
+      &:hover {
+        text-decoration: none;
+      }
     }
   }
 }
-
