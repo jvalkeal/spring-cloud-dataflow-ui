@@ -5,8 +5,6 @@ import { of } from 'rxjs';
 import { Properties } from 'spring-flo';
 import { PropertiesGroupModel } from '../support/properties-group-model';
 import PropertiesSource = Properties.PropertiesSource;
-// import {StreamAppPropertiesSource} from '../../../streams/components/flo/properties/stream-properties-source';
-// import {StreamsService} from '../../../streams/streams.service';
 
 @Component({
   selector: 'app-properties-groups-dialog-content',
@@ -20,13 +18,11 @@ export class PropertiesGroupsDialogComponent implements OnInit {
 
   propertiesGroupModels: Array<GroupPropertiesGroupModel> = [];
 
-  // propertiesGroupModel: PropertiesGroupModel;
-
   propertiesFormGroup: FormGroup;
 
   groupPropertiesSources: GroupPropertiesSources;
 
-  state: any = {}
+  state: any = {};
 
   constructor(private bsModalRef: BsModalRef
   ) {
@@ -34,10 +30,8 @@ export class PropertiesGroupsDialogComponent implements OnInit {
   }
 
   handleOk() {
-    // this.propertiesGroupModel.applyChanges();
     const properties: Properties.Property[] = [];
     this.propertiesGroupModels.forEach(p => {
-      // const pp = p.getControlsModels().map(cm => cm.property);
       p.getControlsModels().forEach(cm => {
         properties.push(cm.property);
       });
@@ -51,7 +45,10 @@ export class PropertiesGroupsDialogComponent implements OnInit {
   }
 
   get okDisabled() {
-    return false;
+    return !this.propertiesGroupModels.length > 0
+      || !this.propertiesFormGroup
+      || this.propertiesFormGroup.invalid
+      || !this.propertiesFormGroup.dirty;
   }
 
   ngOnInit() {
@@ -60,10 +57,8 @@ export class PropertiesGroupsDialogComponent implements OnInit {
   setData(groupPropertiesSources: GroupPropertiesSources) {
     let first = true;
     groupPropertiesSources.propertiesSources.forEach(ps => {
-
       this.state[ps.title] = first;
       first = false;
-
       const model: GroupPropertiesGroupModel  = new GroupPropertiesGroupModel(ps, ps.title);
       model.load();
       model.loadedSubject.subscribe();
@@ -71,13 +66,6 @@ export class PropertiesGroupsDialogComponent implements OnInit {
     });
     this.groupPropertiesSources = groupPropertiesSources;
   }
-
-
-  // setData(propertiesSource: PropertiesSource) {
-  //   this.propertiesGroupModel = new PropertiesGroupModel(propertiesSource);
-  //   this.propertiesGroupModel.load();
-  //   this.propertiesGroupModel.loadedSubject.subscribe();
-  // }
 }
 
 export class GroupPropertiesGroupModel extends PropertiesGroupModel {
@@ -100,16 +88,16 @@ export class GroupPropertiesSource implements PropertiesSource {
   }
 
   applyChanges(properties: Properties.Property[]): void {
-    // this.confirm.emit(properties);
   }
-
 }
 
 export class GroupPropertiesSources {
 
   public confirm = new EventEmitter();
+
   constructor(public propertiesSources: Array<GroupPropertiesSource>) {
   }
+
   applyChanges(properties: Properties.Property[]): void {
     this.confirm.emit(properties);
   }

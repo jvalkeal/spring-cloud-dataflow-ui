@@ -668,10 +668,12 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     const options = appId ? builder.builderDeploymentProperties.apps[appId] : builder.builderDeploymentProperties.global;
     modal.content.title = `Deployment properties for platform`;
 
+    // jee.foo.bar-xxx -> jee.foo
     const deduceKey = (key) => {
       return key.substring(0, key.lastIndexOf('.'));
     };
 
+    // grouping all properties by a deduced key
     const groupBy = (items, key) => items.reduce(
       (result, item) => {
         const groupKey = deduceKey(item[key]);
@@ -682,6 +684,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       }, {}
     );
 
+    // setup groups and sort alphabetically by group titles
     let groupedPropertiesSources: Array<GroupPropertiesSource> = [];
     Object.entries(groupBy(options, 'id')).forEach(v => {
       const groupedPropertiesSource = new GroupPropertiesSource(Object.assign([], v[1]
@@ -693,6 +696,7 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     }));
     const groupPropertiesSources = new GroupPropertiesSources(groupedPropertiesSources);
 
+    // get new props from modal
     groupPropertiesSources.confirm.subscribe((properties: Array<any>) => {
       if (appId) {
         builder.builderDeploymentProperties.apps[appId] = properties;
@@ -703,19 +707,6 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
     });
 
     modal.content.setData(groupPropertiesSources);
-
-    // const propertiesSource = new GroupPropertiesSource(Object.assign([], options
-    //   .map((property) => Object.assign({}, property))));
-    //
-    // propertiesSource.confirm.subscribe((properties: Array<any>) => {
-    //   if (appId) {
-    //     builder.builderDeploymentProperties.apps[appId] = properties;
-    //   } else {
-    //     builder.builderDeploymentProperties.global = properties;
-    //   }
-    //   this.changeDetector.markForCheck();
-    // });
-    // modal.content.setData(propertiesSource);
   }
 
   /**
