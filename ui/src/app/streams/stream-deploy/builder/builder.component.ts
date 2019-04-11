@@ -682,12 +682,15 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
       }, {}
     );
 
-    const groupedPropertiesSources: Array<GroupPropertiesSource> = [];
+    let groupedPropertiesSources: Array<GroupPropertiesSource> = [];
     Object.entries(groupBy(options, 'id')).forEach(v => {
       const groupedPropertiesSource = new GroupPropertiesSource(Object.assign([], v[1]
         .map((property) => Object.assign({}, property))), v[0]);
       groupedPropertiesSources.push(groupedPropertiesSource);
     });
+    groupedPropertiesSources = groupedPropertiesSources.sort(((a, b) => {
+      return a.title === b.title ? 0 : a.title < b.title ? -1 : 1;
+    }));
     const groupPropertiesSources = new GroupPropertiesSources(groupedPropertiesSources);
 
     groupPropertiesSources.confirm.subscribe((properties: Array<any>) => {

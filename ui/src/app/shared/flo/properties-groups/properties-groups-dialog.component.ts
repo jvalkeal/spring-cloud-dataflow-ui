@@ -26,6 +26,8 @@ export class PropertiesGroupsDialogComponent implements OnInit {
 
   groupPropertiesSources: GroupPropertiesSources;
 
+  state: any = {}
+
   constructor(private bsModalRef: BsModalRef
   ) {
     this.propertiesFormGroup = new FormGroup({});
@@ -56,7 +58,12 @@ export class PropertiesGroupsDialogComponent implements OnInit {
   }
 
   setData(groupPropertiesSources: GroupPropertiesSources) {
+    let first = true;
     groupPropertiesSources.propertiesSources.forEach(ps => {
+
+      this.state[ps.title] = first;
+      first = false;
+
       const model: GroupPropertiesGroupModel  = new GroupPropertiesGroupModel(ps, ps.title);
       model.load();
       model.loadedSubject.subscribe();
