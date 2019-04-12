@@ -6,6 +6,11 @@ import { Properties } from 'spring-flo';
 import { PropertiesGroupModel } from '../support/properties-group-model';
 import PropertiesSource = Properties.PropertiesSource;
 
+/**
+ * Component for displaying generic properties and capturing their values.
+ *
+ * @author Janne Valkealahti
+ */
 @Component({
   selector: 'app-properties-groups-dialog-content',
   templateUrl: 'properties-groups-dialog.component.html',
@@ -14,14 +19,27 @@ import PropertiesSource = Properties.PropertiesSource;
 })
 export class PropertiesGroupsDialogComponent implements OnInit {
 
+  /**
+   * Dialog title.
+   */
   public title: string;
 
+  /**
+   * Groups are eventually added here and accessed from a template.
+   */
   propertiesGroupModels: Array<GroupPropertiesGroupModel> = [];
 
+  /**
+   * Template will eventually add controls to this group.
+   */
   propertiesFormGroup: FormGroup;
 
-  groupPropertiesSources: GroupPropertiesSources;
+  private groupPropertiesSources: GroupPropertiesSources;
 
+  /**
+   * Collapse states for groups are kept here.
+   * i.e. {my.group1: true, my.group2: false}
+   */
   state: any = {};
 
   constructor(private bsModalRef: BsModalRef
@@ -45,6 +63,8 @@ export class PropertiesGroupsDialogComponent implements OnInit {
   }
 
   collapse(id: string) {
+    // Collapse already open group, otherwise keep selected
+    // group open and close others.
     Object.entries(this.state).forEach(e => {
       if (e[0] === id && e[1]) {
         this.state[e[0]] = false;
@@ -55,7 +75,7 @@ export class PropertiesGroupsDialogComponent implements OnInit {
   }
 
   get okDisabled() {
-    return !this.propertiesGroupModels.length > 0
+    return !(this.propertiesGroupModels.length > 0)
       || !this.propertiesFormGroup
       || this.propertiesFormGroup.invalid
       || !this.propertiesFormGroup.dirty;
@@ -78,6 +98,9 @@ export class PropertiesGroupsDialogComponent implements OnInit {
   }
 }
 
+/**
+ * Class to add group title to a model.
+ */
 export class GroupPropertiesGroupModel extends PropertiesGroupModel {
 
   constructor(propertiesSource: PropertiesSource, public title: string = '') {
@@ -85,6 +108,10 @@ export class GroupPropertiesGroupModel extends PropertiesGroupModel {
   }
 }
 
+/**
+ * Class to implement PropertiesSource and to have needed features
+ * to support multiple sources.
+ */
 export class GroupPropertiesSource implements PropertiesSource {
 
   private options: Array<any>;
@@ -98,9 +125,16 @@ export class GroupPropertiesSource implements PropertiesSource {
   }
 
   applyChanges(properties: Properties.Property[]): void {
+    // nothing to do as we don't rely calling applyChanges() for model
+    // classes because we have multiple groups so controls and its
+    // properties are accesses manually.
   }
 }
 
+/**
+ * Class to keep GroupPropertiesSource in one place and to have
+ * emitter to notify user of a new property changes.
+ */
 export class GroupPropertiesSources {
 
   public confirm = new EventEmitter();

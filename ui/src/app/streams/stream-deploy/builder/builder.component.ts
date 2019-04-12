@@ -667,7 +667,8 @@ export class StreamDeployBuilderComponent implements OnInit, OnDestroy {
 
     // setup groups and sort alphabetically by group titles
     let groupedPropertiesSources: Array<GroupPropertiesSource> = [];
-    Object.entries(groupBy(options, 'id')).forEach(v => {
+    const groupedEntries: { [s: string]: Array<any>; } = groupBy(options, 'id');
+    Object.entries(groupedEntries).forEach(v => {
       const groupedPropertiesSource = new GroupPropertiesSource(Object.assign([], v[1]
         .map((property) => Object.assign({}, property))), v[0]);
       groupedPropertiesSources.push(groupedPropertiesSource);
