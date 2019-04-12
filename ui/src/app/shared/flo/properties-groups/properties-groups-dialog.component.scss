@@ -47,6 +47,14 @@ label.df-property-control {
 
 .properties {
 
+  .help {
+    color: #1B78B3;
+    position: absolute;
+    right: 8px;
+    top: 1px;
+    cursor: pointer;
+  }
+
   .line-toggle {
     background: #F5F6F7;
     height: 42px;

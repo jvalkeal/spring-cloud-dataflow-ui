@@ -9,11 +9,22 @@
   <div class="properties"
        *ngFor="let group of propertiesGroupModels">
     <div class="line-toggle">
+
+      <div class="help">
+        <span class="fa fa-question-circle" tooltipPlacement="left" [tooltip]="tooltipTemplate"></span>
+        <ng-template #tooltipTemplate>
+          <div>
+            <div><strong>Hi!</strong></div>
+          </div>
+        </ng-template>
+      </div>
+
       <a class="toggle" (click)="collapse(group.title)">
                 <span class="fa" [class.fa-chevron-down]="state[group.title]"
                       [class.fa-chevron-right]="!state[group.title]"></span>
         {{group.title}}
       </a>
+
     </div>
     <div *ngIf="state[group.title]">
       <properties-group [propertiesGroupModel]="group"
