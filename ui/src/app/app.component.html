@@ -8,6 +8,7 @@
     </div>
     <app-search></app-search>
     <div class="header-actions">
+      <app-user></app-user>
       <app-about-signpost></app-about-signpost>
     </div>
   </clr-header>
@@ -26,7 +27,7 @@
       <!--        </clr-vertical-nav-group-children>-->
       <!--      </clr-vertical-nav-group>-->
       <clr-vertical-nav-group routerLinkActive="active" clrVerticalNavGroupExpanded="true"
-                              appRole appFeature="streams">
+                              [appRole]="[]" appFeature="streams">
         <clr-icon shape="cloud-scale" clrVerticalNavIcon></clr-icon>
         Streams
         <clr-vertical-nav-group-children>
@@ -45,7 +46,7 @@
         </clr-vertical-nav-group-children>
       </clr-vertical-nav-group>
       <clr-vertical-nav-group routerLinkActive="active" clrVerticalNavGroupExpanded="true"
-                              appRole appFeature="tasks">
+                              [appRole]="[]" appFeature="tasks">
         <clr-icon shape="blocks-group" clrVerticalNavIcon></clr-icon>
         Tasks / Jobs
         <clr-vertical-nav-group-children>
@@ -71,7 +72,7 @@
             clrVerticalNavLink
             routerLinkActive="active"
             routerLink="tasks-jobs/schedules"
-            appRole
+            [appRole]="[]"
             appFeature="schedules">
             Schedules
           </a>
@@ -97,7 +98,7 @@
             clrVerticalNavLink
             routerLinkActive="active"
             routerLink="manage/import-export"
-            appRole
+            [appRole]="[]"
             appFeature="streams,tasks">
             Import / Export
           </a>

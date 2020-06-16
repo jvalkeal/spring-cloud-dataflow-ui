@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { NotificationService } from './shared/service/notification.service';
+import { Component } from '@angular/core';
 import { ThemeService } from './layout/theme/theme.service';
 
 @Component({
@@ -12,6 +11,10 @@ export class AppComponent {
   darkThemeIsActive = false;
   isAboutOpen = false;
 
+  constructor(
+    private themeService: ThemeService
+  ) { }
+
   toggleDarkTheme() {
     if (this.darkThemeIsActive) {
       this.themeService.switchTheme('default');
@@ -20,11 +23,6 @@ export class AppComponent {
       this.themeService.switchTheme('dark');
       this.darkThemeIsActive = true;
     }
-  }
-
-  constructor(private themeService: ThemeService) {
-    // themeService.switchTheme('dark');
-    // this.darkThemeIsActive = true;
   }
 
   toggleAbout() {

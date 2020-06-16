@@ -22,25 +22,25 @@ export class LogoutComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    if (!this.securityService.security.isAuthenticationEnabled) {
-      this.loggerService.log('No need to logout. Authentication is not enabled.');
-      this.router.navigate(['']);
-      return;
-    } else if (!this.securityService.security.isAuthenticated) {
-      this.loggerService.log('No need to logout. User is not authenticated.');
-      this.router.navigate(['']);
-      return;
-    }
+    // if (!this.securityService.security.isAuthenticationEnabled) {
+    //   this.loggerService.log('No need to logout. Authentication is not enabled.');
+    //   this.router.navigate(['']);
+    //   return;
+    // } else if (!this.securityService.security.isAuthenticated) {
+    //   this.loggerService.log('No need to logout. User is not authenticated.');
+    //   this.router.navigate(['']);
+    //   return;
+    // }
 
-    this.loggerService.log('Logging out ...');
-    this.loggerService.log(`Logging out user ${this.securityService.security.username} (OAuth)`);
-    this.securityService.clearLocalSecurity();
-    // TODO
-    // this.aboutService.about.reset();
+    // this.loggerService.log('Logging out ...');
+    // this.loggerService.log(`Logging out user ${this.securityService.security.username} (OAuth)`);
+    // this.securityService.clearLocalSecurity();
+    // // TODO
+    // // this.aboutService.about.reset();
 
-    const logoutUrl = '//' + window.location.host + '/logout';
-    this.loggerService.log('Redirecting to ' + logoutUrl);
-    window.open(logoutUrl, '_self');
+    // const logoutUrl = '//' + window.location.host + '/logout';
+    // this.loggerService.log('Redirecting to ' + logoutUrl);
+    // window.open(logoutUrl, '_self');
   }
 
   ngOnDestroy() {

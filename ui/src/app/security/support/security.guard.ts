@@ -6,28 +6,30 @@ import get from 'lodash.get';
 
 @Injectable()
 export class SecurityGuard implements CanActivate {
-  constructor(private router: Router,
-              private securityService: SecurityService,
-              private aboutService: AboutService) {
+
+  constructor(
+    private router: Router,
+    private securityService: SecurityService,
+    private aboutService: AboutService) {
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const security = this.securityService.security;
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+
     const features = this.aboutService.about.features;
     const rolesNeeded: string[] = route.data.roles;
     const featureNeeded: string = route.data.feature;
     if (featureNeeded && features && !get(features, featureNeeded, false)) {
       this.router.navigate(['feature-disabled']);
     }
-    // if (security.isAuthenticationEnabled) {
-    //   this.loggerService.log(`Determining authorizations ... ` +
-    //     `[authentication enabled: ${securityInfo.isAuthenticationEnabled}]`, route.data);
-    // }
-    if (security.canAccess(rolesNeeded)) {
+
+    const canAccess = await this.securityService.canAccess(rolesNeeded);
+    if (canAccess) {
       return true;
     }
-    if (security.isAuthenticationEnabled) {
-      if (security.isAuthenticated) {
+    const securityEnabled = await this.securityService.securityEnabled().toPromise();
+    if (securityEnabled) {
+      const loggedInUser = await this.securityService.loggedinUser().toPromise();
+      if (loggedInUser) {
         this.router.navigate(['roles-missing']);
       } else {
         this.router.navigate(['authentication-required']);
