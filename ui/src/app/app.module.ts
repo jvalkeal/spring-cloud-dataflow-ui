@@ -59,8 +59,8 @@ import { ROOT_REDUCERS, metaReducers } from './reducers/reducer';
           return securityService.load()
             .pipe(
               mergeMap((security: Security) => {
-                securityService.loaded(security.isAuthenticationEnabled, security.username, security.roles);
-                if (security.isAuthenticated || !security.isAuthenticationEnabled) {
+                securityService.loaded(security.authenticationEnabled, security.username, security.roles);
+                if (security.authenticated || !security.authenticationEnabled) {
                   return aboutService.load()
                     .pipe(
                       map(about => security)

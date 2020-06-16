@@ -50,9 +50,8 @@ export class SecurityService {
 
   load(): Observable<Security> {
     const headers = HttpUtils.getDefaultHttpHeaders();
-    return this.http.get<any>('/security/info', { headers })
+    return this.http.get<Security>('/security/info', { headers })
       .pipe(
-        map(Security.parse),
         catchError(ErrorUtils.catchError)
       );
   }
