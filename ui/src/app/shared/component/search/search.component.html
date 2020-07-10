@@ -1,7 +1,7 @@
-<form class="quick-search focus" [class.focus]="isFocus">
+<form class="focus" [class.focus]="isFocus">
   <label for="quick_search">
-    <clr-spinner *ngIf="isSearching()" clrSmall></clr-spinner>
-    <clr-icon *ngIf="!isSearching()" class="icon-search" shape="search"></clr-icon>
+    <!-- <clr-spinner *ngIf="isSearching()" clrSmall></clr-spinner> -->
+    <!-- <clr-icon *ngIf="!isSearching()" class="icon-search" shape="search"></clr-icon> -->
     <input [formControl]="search" autocomplete="off" (focus)="onInputFocus()" (blur)="onInputBlur()" (keydown)="onKeyDown($event)"
            id="quick_search" type="text" placeholder="Search for keywords..." #inputQuickSearch>
     <button type="button" (click)="clear()" (mousedown)="onInputFocus()" class="btn-clear" *ngIf="isSearch()">

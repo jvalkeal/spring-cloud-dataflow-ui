@@ -6,7 +6,8 @@
         <span class="title">Data Flow</span>
       </a>
     </div>
-    <app-search></app-search>
+    <!-- <div [clr-nav-level]="1"></div> -->
+    <app-search class="search"></app-search>
     <div class="header-actions">
       <app-user *ngIf="securityEnabled|async"></app-user>
       <span class="divider"></span>

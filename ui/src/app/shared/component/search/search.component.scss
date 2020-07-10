@@ -56,7 +56,7 @@
     border-radius: 3px;
     outline: none;
     box-shadow: none;
-    width: var(--clr-search-width, 600px);
+    // width: var(--clr-search-width, 600px);
 
     &:hover {
       background: rgba(white, .1);
@@ -76,6 +76,7 @@
 
   .result {
     background: var(--clr-global-selection-color, white);
+    background: black;
     position: fixed;
     padding: .4rem 0;
     top: 60px;
