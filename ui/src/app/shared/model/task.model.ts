@@ -48,3 +48,13 @@ export class TaskPage extends Page<Task> {
     return page;
   }
 }
+
+export class TaskLaunchConfig {
+  id: string;
+  platform: any;
+  deployers: any;
+  apps: any;
+
+  constructor() {
+  }
+}

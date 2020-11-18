@@ -1,0 +1,61 @@
+<div *ngIf="!loading">
+  <h1 class="page-title">
+    <span class="text-truncate">
+      Launch task <strong *ngIf="task">{{task.name}}</strong>
+    </span>
+  </h1>
+  <p style="margin-top: .6rem;margin-bottom: .6rem">
+    Please specify any optional deployment properties. You can either use the builder.
+    <br/>
+    Alternatively, you can point to an external properties file containing the deployment properties. For more
+    information please see the Technical Documentation.
+  </p>
+
+
+  <clr-tabs *ngIf="!loading && task">
+    <clr-tab>
+      <button clrTabLink id="link1">Builder</button>
+      <clr-tab-content id="content1" *clrIfActive="true">
+        <app-task-launch-builder [properties]="properties"
+                                   [id]="task.name"
+                                   [isDeployed]="isDeployed(task)"
+                                   (exportProperties)="runExport($event)"
+                                   (update)="update($event)"
+                                   (deploy)="runDeploy($event)"
+                                   (copyProperties)="runCopy($event)">
+        </app-task-launch-builder>
+      </clr-tab-content>
+    </clr-tab>
+    <clr-tab>
+      <button clrTabLink>Freetext</button>
+      <clr-tab-content *clrIfActive>
+        <app-task-launch-free-text [properties]="properties"
+                                     [id]="task.name"
+                                     [isDeployed]="isDeployed(task)"
+                                     (exportProperties)="runExport($event)"
+                                     (update)="update($event)"
+                                     (deploy)="runDeploy($event)"
+                                     (copyProperties)="runCopy($event)">
+        </app-task-launch-free-text>
+      </clr-tab-content>
+    </clr-tab>
+  </clr-tabs>
+
+  <!-- <clr-modal [(clrModalOpen)]="isDeploying" *ngIf="stream" [clrModalClosable]="false">
+    <h3 class="modal-title" *ngIf="isDeployed(stream)">Update stream</h3>
+    <h3 class="modal-title" *ngIf="!isDeployed(stream)">Deploy stream</h3>
+    <div class="modal-body" *ngIf="isDeploying">
+      <clr-spinner clrInline clrSmall></clr-spinner>&nbsp;
+      <span *ngIf="isDeployed(stream)">Updating stream ...</span>
+      <span *ngIf="!isDeployed(stream)">Deploying stream(s) ...</span>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" [disabled]="true">Cancel</button>
+    </div>
+  </clr-modal> -->
+</div>
+
+<div *ngIf="loading">
+  <clr-spinner clrInline clrSmall></clr-spinner>
+  Loading data ...
+</div>
