@@ -285,8 +285,8 @@
                       <clr-select-container style="margin-top:0;">
                         <select tabindex="{{100}}" [formControlName]="app.name" clrSelect>
                           <option value="">Default version ({{app.version}})</option>
-                          <option *ngFor="let version of app.versions" [value]="version.version">
-                            {{version.version}}
+                          <option *ngFor="let version of app.versions" [value]="version">
+                            {{version}}
                           </option>
                           <option *ngIf="app.optionsState.isInvalid"
                                   [value]="builder.formGroup.get('appsVersion').get(app.name).value">

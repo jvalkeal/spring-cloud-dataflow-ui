@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { from, Observable, of, zip } from 'rxjs';
-import { map, mergeMap, flatMap } from 'rxjs/operators';
+import { from, Observable, of, pipe, zip } from 'rxjs';
+import { map, mergeMap, flatMap, distinct } from 'rxjs/operators';
 import { Task, TaskLaunchConfig } from '../../../shared/model/task.model';
 import { TaskService } from '../../../shared/api/task.service';
-import { ApplicationType } from '../../../shared/model/app.model';
+import { App, ApplicationType } from '../../../shared/model/app.model';
 import { AppService } from '../../../shared/api/app.service';
 import { ConfigurationMetadataProperty, DetailedApp } from '../../../shared/model/detailed-app.model';
 import { Utils } from '../../../flo/shared/support/utils';
@@ -81,25 +81,67 @@ export class TaskLaunchService {
       .pipe(flatMap((task: Task) => {
         const taskConversion = this.toolsService.parseTaskTextToGraph(task.dslText);
         const platforms = this.taskService.getPlatforms();
+        // this.appService.getAppVersions('', ApplicationType.task);
         return zip(of(task), taskConversion, platforms);
       }))
-      .pipe(map(([task, taskConversion, platforms]) => {
+      .pipe(flatMap(([task, taskConversion, platforms]) => {
+
+        console.log('TEST1', ApplicationType.task.toString());
+
+        const appNames = taskConversion.graph.nodes
+          .filter(node => node.name !== 'START' && node.name !== 'END')
+          .map(node => {
+            return get(node, 'name') as string;
+          });
+        const appVersions = from(appNames)
+          .pipe(distinct())
+          .pipe(mergeMap(
+            // ApplicationType.task
+            appName => this.appService.getAppVersions(appName, 'task' as any)
+              .pipe(map(apps => {
+                return apps.reduce((mapAccumulator, app) => {
+                  const a = mapAccumulator.get(app.name);
+                  if (a) {
+                    if (app.defaultVersion) {
+                      a.version = app.version;
+                    } else {
+                      a.versions = [...a.versions, ...[app.version]];
+                    }
+                  } else {
+                    mapAccumulator.set(app.name, {
+                      version: app.defaultVersion ? app.version : null,
+                      versions: app.defaultVersion ? [] : [app.version]
+                    });
+                  }
+                  return mapAccumulator;
+                }, new Map<string, { version: string, versions: string[]}>());
+              }))
+          ))
+          ;
+
+
+        return zip(of(task), of(taskConversion), of(platforms), appVersions);
+      }))
+      .pipe(map(([task, taskConversion, platforms, appVersions]) => {
         const c = new TaskLaunchConfig();
         c.id = id;
 
-        console.log('XXX1', task);
-        console.log('XXX2', taskConversion);
-        console.log('XXX3', platforms);
+        // console.log('XXX1', task);
+        // console.log('XXX2', taskConversion);
+        // console.log('XXX3', platforms);
+        // console.log('XXX4', appVersions);
 
         c.apps = taskConversion.graph.nodes
           .filter(node => node.name !== 'START' && node.name !== 'END')
           .map(node => {
+            const n = get(node, 'name') as string;
+
             return {
               origin: get(node, 'name'),
               name: get(node.metadata, 'label') || get(node, 'name'),
               type: 'task',
-              version: '1.0.0',
-              versions: ['1.0.0'],
+              version: appVersions.get(n).version,
+              versions: appVersions.get(n).versions,
               options: null,
               optionsState: {
                 isLoading: false,
@@ -138,25 +180,6 @@ export class TaskLaunchService {
             suffix: 'MB'
           }
         ];
-
-        // const platforms = result.args[0] as Platform[];
-        // (result.args as Array<any>).splice(0, 1);
-        // config.platform = {
-        //   id: 'platform',
-        //   name: 'platform',
-        //   form: 'select',
-        //   type: 'java.lang.String',
-        //   defaultValue: '',
-        //   values: platforms.map((platform: Platform) => {
-        //     return {
-        //       key: platform.name,
-        //       name: platform.name,
-        //       type: platform.type,
-        //       options: platform.options
-        //     };
-        //   })
-        // };
-
 
         c.platform = {
           id: 'platform',
