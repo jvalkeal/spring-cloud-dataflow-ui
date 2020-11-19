@@ -5,7 +5,6 @@ import { JobsComponent } from './jobs/jobs.component';
 import { ExecutionsComponent } from './executions/executions.component';
 import { TaskComponent } from './tasks/task/task.component';
 import { LaunchComponent } from './tasks/launch/launch.component';
-import { Launch2Component } from './tasks/launch/launch2.component';
 import { ExecutionComponent } from './executions/execution/execution.component';
 import { ExecutionComponent as JobExecutionComponent } from './jobs/execution/execution.component';
 import { StepComponent } from './jobs/step/step.component';
@@ -40,10 +39,6 @@ const routes: Routes = [
       {
         path: 'tasks/:name/launch',
         component: LaunchComponent
-      },
-      {
-        path: 'tasks/:name/launch2',
-        component: Launch2Component
       },
       {
         path: 'task-executions',

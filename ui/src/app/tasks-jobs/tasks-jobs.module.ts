@@ -11,7 +11,6 @@ import { DestroyComponent } from './tasks/destroy/destroy.component';
 import { DestroyComponent as DestroyScheduleComponent } from './schedules/destroy/destroy.component';
 import { TaskComponent } from './tasks/task/task.component';
 import { LaunchComponent } from './tasks/launch/launch.component';
-import { Launch2Component } from './tasks/launch/launch2.component';
 import { FreeTextComponent } from './tasks/launch/free-text/free-text.component';
 import { BuilderComponent } from './tasks/launch/builder/builder.component';
 import { SharedModule } from '../shared/shared.module';
@@ -39,7 +38,6 @@ import { SharedFloModule } from '../flo/shared-flo.module';
     DestroyComponent,
     TaskComponent,
     LaunchComponent,
-    Launch2Component,
     FreeTextComponent,
     BuilderComponent,
     ExecutionComponent,
