@@ -132,7 +132,8 @@ export class BuilderComponent implements OnInit, OnDestroy {
     deployer: true,
     app: true,
     specificPlatform: true,
-    ctr: true
+    ctr: true,
+    arguments: true
   };
 
   constructor(private taskLaunchService: TaskLaunchService,

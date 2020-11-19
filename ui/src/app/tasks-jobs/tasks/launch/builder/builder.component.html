@@ -168,6 +168,22 @@
               </div>
             </div>
 
+            <!-- 11 -->
+            <div class="line-toggle">
+              <a class="toggle" (click)="state.arguments = !state.arguments">
+                <clr-icon shape="angle" [class.active]="state.arguments"></clr-icon>
+                Arguments
+              </a>
+            </div>
+
+            <!-- 12 -->
+            <div *ngIf="state.arguments">
+              <div class="line-body">
+                <!-- <input tabindex="{{50 + 1}}" placeholder="Enter a value" class="clr-input"
+                       type="text"/> -->
+              </div>
+            </div>
+
           </div>
 
           <!-- col 2 global -->
@@ -294,6 +310,16 @@
               </div>
             </div>
 
+            <!-- 11 -->
+            <div class="line-toggle"></div>
+
+            <!-- 12 -->
+            <div *ngIf="state.arguments">
+              <div class="line-body">
+                <input tabindex="{{50 + 2}}" placeholder="Enter a value" class="clr-input"
+                       type="text"/>
+              </div>
+            </div>
 
           </div>
 
@@ -444,6 +470,18 @@
 
               <!-- 10 -->
               <div class="line-body" *ngIf="state.ctr"></div>
+
+              <!-- 11 -->
+              <div class="line-toggle"></div>
+
+              <!-- 12 -->
+              <div *ngIf="state.arguments">
+                <div class="line-body">
+                  <input tabindex="{{50 + 3}}" placeholder="Enter a value" class="clr-input"
+                         type="text"/>
+                </div>
+              </div>
+
 
             </div>
           </div>
