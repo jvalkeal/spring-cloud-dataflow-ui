@@ -57,6 +57,9 @@ export interface Builder {
     apps: {};
   };
 
+  ctrProperties: any[];
+  // ctrControls: any;
+
   errors: {
     global: [],
     app: []
@@ -128,7 +131,8 @@ export class BuilderComponent implements OnInit, OnDestroy {
     platform: true,
     deployer: true,
     app: true,
-    specificPlatform: true
+    specificPlatform: true,
+    ctr: true
   };
 
   constructor(private taskLaunchService: TaskLaunchService,
@@ -435,6 +439,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
     const getValue = (defaultValue) => !defaultValue ? '' : defaultValue;
     const builderAppsProperties = {};
     const builderDeploymentProperties = { global: [], apps: {} };
+    const ctrProperties = [];
 
     // Platform
     const platformControl = new FormControl(getValue(taskLaunchConfig.platform.defaultValue),
@@ -470,6 +475,11 @@ export class BuilderComponent implements OnInit, OnDestroy {
     if (defaultPlatform) {
       populateDeployerProperties(defaultPlatform.name);
     }
+
+    // ctr
+    taskLaunchConfig.ctr.forEach(o => {
+      ctrProperties.push(Object.assign({ isSemantic: true }, o));
+    });
 
     platformControl.valueChanges.subscribe((value) => {
       if (!defaultPlatform) {
@@ -570,6 +580,8 @@ export class BuilderComponent implements OnInit, OnDestroy {
       clean(val, specificPlatformControls);
     });
 
+    // const ctrControls: FormArray = new FormArray([]);
+
     formGroup.addControl('deployers', deployers);
     formGroup.addControl('appsVersion', appsVersion);
     formGroup.addControl('global', globalControls);
@@ -585,6 +597,8 @@ export class BuilderComponent implements OnInit, OnDestroy {
       appsVersion,
       globalControls,
       specificPlatformControls,
+      // ctrControls,
+      ctrProperties,
 
       errors: {
         global: [],
@@ -743,6 +757,65 @@ export class BuilderComponent implements OnInit, OnDestroy {
     });
     this.groupsPropertiesModal.setData(groupPropertiesSources);
     this.groupsPropertiesModal.title = `Deployment properties for platform`;
+    this.groupsPropertiesModal.isOpen = true;
+  }
+
+  getCtrProperties(ctrProperties: any[]): Array<{ key: string, value: any }> {
+    if (!ctrProperties) {
+      return [];
+    }
+
+    return ctrProperties.map((property: Properties.Property) => {
+      if (property.value !== null && property.value !== undefined && property.value.toString() !== ''
+        && property.value !== property.defaultValue) {
+        return {
+          key: `${property.id}`,
+          value: property.value
+        };
+      }
+      return null;
+    });
+  }
+
+  openCtrProperties(builder) {
+    const options = builder.ctrProperties;
+
+    // jee.foo.bar-xxx -> jee.foo
+    const deduceKey = (key) => {
+      return key.substring(0, key.lastIndexOf('.'));
+    };
+
+    // grouping all properties by a deduced key
+    const groupBy = (items, key) => items.reduce(
+      (result, item) => {
+        const groupKey = deduceKey(item[key]);
+        return ({
+          ...result,
+          [groupKey]: [...(result[groupKey] || []), item],
+        });
+      }, {}
+    );
+
+    // setup groups and sort alphabetically by group titles
+    let groupedPropertiesSources: Array<GroupPropertiesSource> = [];
+    const groupedEntries: { [s: string]: Array<any>; } = groupBy(options, 'id');
+    Object.entries(groupedEntries).forEach(v => {
+      const groupedPropertiesSource = new GroupPropertiesSource(Object.assign([], v[1]
+        .map((property) => Object.assign({}, property))), v[0]);
+      groupedPropertiesSources.push(groupedPropertiesSource);
+    });
+    groupedPropertiesSources = groupedPropertiesSources.sort(((a, b) => {
+      return a.title === b.title ? 0 : a.title < b.title ? -1 : 1;
+    }));
+    const groupPropertiesSources = new GroupPropertiesSources(groupedPropertiesSources);
+
+    // get new props from modal
+    groupPropertiesSources.confirm.subscribe((properties: Array<any>) => {
+      builder.builderDeploymentProperties = properties;
+      this.changeDetector.markForCheck();
+    });
+    this.groupsPropertiesModal.setData(groupPropertiesSources);
+    this.groupsPropertiesModal.title = `Ctr properties`;
     this.groupsPropertiesModal.isOpen = true;
   }
 

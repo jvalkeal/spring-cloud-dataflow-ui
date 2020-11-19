@@ -151,6 +151,23 @@
               </div>
             </div>
 
+            <!-- 9 -->
+            <div class="line-toggle">
+              <a class="toggle" (click)="state.ctr = !state.ctr">
+                <clr-icon shape="angle" [class.active]="state.ctr"></clr-icon>
+                Ctr Properties
+              </a>
+            </div>
+
+            <!-- 10 -->
+            <div class="line-body" *ngIf="state.ctr">
+              <!-- <div class="status" *ngIf="builder.formGroup.get('platform').invalid">
+              </div> -->
+              <div class="form-control form-control-label">
+                Properties
+              </div>
+            </div>
+
           </div>
 
           <!-- col 2 global -->
@@ -260,6 +277,23 @@
                 </div>
               </div>
             </div>
+
+            <!-- 9 -->
+            <div class="line-toggle"></div>
+
+            <!-- 10 -->
+            <div class="line-body"
+                 *ngIf="state.ctr && builder.ctrProperties.length > 0">
+              <div class="form-control form-control-label">
+                <strong>{{getCtrProperties(builder.ctrProperties).length}}</strong>
+                <span> /</span> {{builder.ctrProperties.length}} properties
+                <button tabindex="{{101}}" type="button" (click)="openCtrProperties(builder)"
+                        class="btn btn-sm btn-secondary">
+                  Edit
+                </button>
+              </div>
+            </div>
+
 
           </div>
 
@@ -404,6 +438,12 @@
                   </div>
                 </div>
               </div>
+
+              <!-- 9 -->
+              <div class="line-toggle"></div>
+
+              <!-- 10 -->
+              <div class="line-body" *ngIf="state.ctr"></div>
 
             </div>
           </div>

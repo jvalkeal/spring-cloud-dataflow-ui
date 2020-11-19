@@ -130,7 +130,7 @@ export class TaskLaunchService {
         // console.log('XXX2', taskConversion);
         // console.log('XXX3', platforms);
         // console.log('XXX4', appVersions);
-        console.log('XXX5', ctrOptions);
+        // console.log('XXX5', ctrOptions);
 
         c.apps = taskConversion.graph.nodes
           .filter(node => node.name !== 'START' && node.name !== 'END')
@@ -197,6 +197,7 @@ export class TaskLaunchService {
             };
           })
         };
+        c.ctr = ctrOptions;
         return c;
       }))
       ;

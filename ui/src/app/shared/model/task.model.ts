@@ -54,6 +54,7 @@ export class TaskLaunchConfig {
   platform: any;
   deployers: any;
   apps: any;
+  ctr: any;
 
   constructor() {
   }
