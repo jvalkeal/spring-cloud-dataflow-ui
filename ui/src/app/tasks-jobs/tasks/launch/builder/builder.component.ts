@@ -776,7 +776,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
         };
       }
       return null;
-    });
+    }).filter(p => p !== null);
   }
 
   openCtrProperties(builder: Builder) {
