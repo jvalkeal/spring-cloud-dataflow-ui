@@ -38,9 +38,18 @@
 
             <!-- 4 -->
             <div *ngIf="state.deployer">
-              <div class="line-body" *ngFor="let deployer of builder.taskLaunchConfig.deployers;let i = index">
+              <!-- <div class="line-body" *ngFor="let deployer of builder.taskLaunchConfig.deployers;let i = index">
 
                 <div class="status" *ngIf="builder.formGroup.get('deployers').controls[i].invalid">
+                </div>
+
+                <div class="form-control form-control-label">
+                  {{deployer.name}}
+                </div>
+              </div> -->
+              <div class="line-body" *ngFor="let deployer of builder.taskLaunchConfig.deployers;let i = index">
+
+                <div class="status" *ngIf="builder.deployers.controls[i].invalid">
                 </div>
 
                 <div class="form-control form-control-label">
@@ -72,10 +81,19 @@
             </div>
             <div *ngIf="state.specificPlatform"
                  formArrayName="specificPlatform">
-              <div class="line-body" *ngFor="let f of builder.formGroup.get('specificPlatform').controls;let i = index"
+              <!-- <div class="line-body" *ngFor="let f of builder.formGroup.get('specificPlatform').controls;let i = index"
                    [formGroupName]="i"
                    [class.has-error]="builder.formGroup.get('specificPlatform').controls[i].get('property').invalid">
                 <div class="status" *ngIf="builder.formGroup.get('specificPlatform').controls[i].invalid">
+                </div>
+
+                <input tabindex="{{50 + i}}" placeholder="Enter a value" class="clr-input"
+                       formControlName="property" type="text"/>
+              </div> -->
+              <div class="line-body" *ngFor="let f of builder.specificPlatformControls.controls;let i = index"
+                   [formGroupName]="i"
+                   [class.has-error]="builder.specificPlatformControls.controls[i].get('property').invalid">
+                <div class="status" *ngIf="builder.specificPlatformControls.controls[i].invalid">
                 </div>
 
                 <input tabindex="{{50 + i}}" placeholder="Enter a value" class="clr-input"
@@ -107,12 +125,24 @@
                   Properties
                 </div>
               </div>
-              <div formArrayName="global">
+              <!-- <div formArrayName="global">
                 <div class="line-body" *ngFor="let f of builder.formGroup.get('global').controls;let i = index"
                      [formGroupName]="i"
                      [class.has-error]="builder.formGroup.get('global').controls[i].get('property').invalid">
 
                   <div class="status" *ngIf="builder.formGroup.get('global').controls[i].invalid">
+                  </div>
+
+                  <input tabindex="{{102 + i}}" placeholder="Enter a value" class="clr-input"
+                         formControlName="property" type="text"/>
+                </div>
+              </div> -->
+              <div formArrayName="global">
+                <div class="line-body" *ngFor="let f of builder.globalControls.controls;let i = index"
+                     [formGroupName]="i"
+                     [class.has-error]="builder.globalControls.controls[i].get('property').invalid">
+
+                  <div class="status" *ngIf="builder.globalControls.controls[i].invalid">
                   </div>
 
                   <input tabindex="{{102 + i}}" placeholder="Enter a value" class="clr-input"
@@ -158,9 +188,12 @@
 
             <!-- 4 -->
             <div formArrayName="deployers" *ngIf="state.deployer">
+              <!-- <div [formGroupName]="i" class="line-body"
+                   *ngFor="let deployer of builder.taskLaunchConfig.deployers; let i = index"
+                   [class.has-error]="builder.formGroup.get('deployers').controls[i].get('global').invalid"> -->
               <div [formGroupName]="i" class="line-body"
                    *ngFor="let deployer of builder.taskLaunchConfig.deployers; let i = index"
-                   [class.has-error]="builder.formGroup.get('deployers').controls[i].get('global').invalid">
+                   [class.has-error]="builder.deployers.controls[i].get('global').invalid">
 
                 <input tabindex="{{2 + i}}" placeholder="Enter a number" formControlName="global" class="clr-input"
                        [class.form-control-number]="deployer.suffix" type="text"/>
@@ -184,11 +217,20 @@
             </div>
 
             <!-- 6 -->
-            <div *ngIf="state.specificPlatform"
+            <!-- <div *ngIf="state.specificPlatform"
                  formArrayName="specificPlatform">
               <div class="line-body" *ngFor="let f of builder.formGroup.get('specificPlatform').controls;let i = index"
                    [formGroupName]="i"
                    [class.has-error]="builder.formGroup.get('specificPlatform').controls[i].get('global').invalid">
+                <input tabindex="{{50 + i}}" placeholder="Enter a value" class="clr-input" formControlName="global"
+                       type="text"/>
+              </div>
+            </div> -->
+            <div *ngIf="state.specificPlatform"
+                 formArrayName="specificPlatform">
+              <div class="line-body" *ngFor="let f of builder.specificPlatformControls.controls;let i = index"
+                   [formGroupName]="i"
+                   [class.has-error]="builder.specificPlatformControls.controls[i].get('global').invalid">
                 <input tabindex="{{50 + i}}" placeholder="Enter a value" class="clr-input" formControlName="global"
                        type="text"/>
               </div>
@@ -201,10 +243,18 @@
             <div *ngIf="state.app">
               <div class="line-body"></div>
               <div class="line-body"></div>
-              <div formArrayName="global">
+              <!-- <div formArrayName="global">
                 <div class="line-body" *ngFor="let f of builder.formGroup.get('global').controls;let i = index"
                      [formGroupName]="i"
                      [class.has-error]="builder.formGroup.get('global').controls[i].get('global').invalid">
+                  <input tabindex="{{102 + i}}" placeholder="Enter a value" class="clr-input"
+                         formControlName="global" type="text"/>
+                </div>
+              </div> -->
+              <div formArrayName="global">
+                <div class="line-body" *ngFor="let f of builder.globalControls.controls;let i = index"
+                     [formGroupName]="i"
+                     [class.has-error]="builder.globalControls.controls[i].get('global').invalid">
                   <input tabindex="{{102 + i}}" placeholder="Enter a value" class="clr-input"
                          formControlName="global" type="text"/>
                 </div>
@@ -236,9 +286,17 @@
 
               <!-- 4 -->
               <div formArrayName="deployers" *ngIf="state.deployer">
-                <div [formGroupName]="i" class="line-body"
+                <!-- <div [formGroupName]="i" class="line-body"
                      *ngFor="let deployer of builder.taskLaunchConfig.deployers; let i = index"
                      [class.has-error]="builder.formGroup.get('deployers').controls[i].get(app.name).invalid">
+                  <input tabindex="{{2 + i}}" placeholder="Enter a number" [formControlName]="app.name"
+                         class="clr-input"
+                         [class.form-control-number]="deployer.suffix" type="text"/>
+                  <span class="placeholder-unit">{{deployer.suffix}}</span>
+                </div> -->
+                <div [formGroupName]="i" class="line-body"
+                     *ngFor="let deployer of builder.taskLaunchConfig.deployers; let i = index"
+                     [class.has-error]="builder.deployers.controls[i].get(app.name).invalid">
                   <input tabindex="{{2 + i}}" placeholder="Enter a number" [formControlName]="app.name"
                          class="clr-input"
                          [class.form-control-number]="deployer.suffix" type="text"/>
@@ -265,10 +323,17 @@
 
               <div *ngIf="state.specificPlatform"
                    formArrayName="specificPlatform">
-                <div class="line-body"
+                <!-- <div class="line-body"
                      *ngFor="let f of builder.formGroup.get('specificPlatform').controls;let i = index"
                      [formGroupName]="i"
                      [class.has-error]="builder.formGroup.get('specificPlatform').controls[i].get(app.name).invalid">
+                  <input tabindex="{{50 + i}}" placeholder="Enter a value" class="clr-input"
+                         [formControlName]="app.name" type="text"/>
+                </div> -->
+                <div class="line-body"
+                     *ngFor="let f of builder.specificPlatformControls.controls;let i = index"
+                     [formGroupName]="i"
+                     [class.has-error]="builder.specificPlatformControls.controls[i].get(app.name).invalid">
                   <input tabindex="{{50 + i}}" placeholder="Enter a value" class="clr-input"
                          [formControlName]="app.name" type="text"/>
                 </div>
@@ -302,7 +367,8 @@
                     *ngIf="app.options && !app.optionsState.isLoading && !app.optionsState.isOnError && !app.optionsState.isInvalid"
                     class="form-control form-control-label">
                     <div *ngIf="app.options.length > 0">
-                      <strong>{{getAppProperties(builder.builderAppsProperties, app.name).length}}</strong>
+                      <!-- <strong>{{getAppProperties(builder.builderAppsProperties, app.name).length}}</strong> -->
+                      <strong>{{getAppProperties(builder.builderDeploymentProperties, app.name).length}}</strong>
                       <span> /</span> {{app.options.length}} properties
                       <button tabindex="{{101}}" type="button" (click)="openApp(builder, app)"
                               class="btn btn-sm btn-secondary">
@@ -324,9 +390,15 @@
                   </div>
                 </div>
                 <div formArrayName="global">
-                  <div class="line-body" *ngFor="let f of builder.formGroup.get('global').controls;let i = index"
+                  <!-- <div class="line-body" *ngFor="let f of builder.formGroup.get('global').controls;let i = index"
                        [formGroupName]="i"
                        [class.has-error]="builder.formGroup.get('global').controls[i].get(app.name).invalid">
+                    <input tabindex="{{102 + i}}" placeholder="Enter a value" class="clr-input"
+                           [formControlName]="app.name" type="text"/>
+                  </div> -->
+                  <div class="line-body" *ngFor="let f of builder.globalControls.controls;let i = index"
+                       [formGroupName]="i"
+                       [class.has-error]="builder.globalControls.controls[i].get(app.name).invalid">
                     <input tabindex="{{102 + i}}" placeholder="Enter a value" class="clr-input"
                            [formControlName]="app.name" type="text"/>
                   </div>

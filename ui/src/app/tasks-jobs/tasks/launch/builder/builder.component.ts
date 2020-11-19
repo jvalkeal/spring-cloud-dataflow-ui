@@ -41,6 +41,28 @@ export class AppPropertiesSource implements StreamAppPropertiesSource {
 
 }
 
+export interface Builder {
+  taskLaunchConfig: TaskLaunchConfig;
+  formGroup: FormGroup;
+  // builderDeploymentProperties: any;
+  builderAppsProperties: any;
+
+  deployers: FormArray;
+  appsVersion: FormGroup;
+  globalControls: FormArray;
+  specificPlatformControls: FormArray;
+
+  builderDeploymentProperties: {
+    global: any[];
+    apps: {};
+  };
+
+  errors: {
+    global: [],
+    app: []
+  };
+}
+
 @Component({
   selector: 'app-task-launch-builder',
   templateUrl: 'builder.component.html',
@@ -91,7 +113,8 @@ export class BuilderComponent implements OnInit, OnDestroy {
    * Builder observable
    * Contains the form and the input data
    */
-  builder$: Observable<any>;
+  // builder$: Observable<any>;
+  builder$: Observable<Builder>;
 
   /**
    * Builder Reference
@@ -406,7 +429,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
   /**
    * Build the Group Form
    */
-  private build(taskLaunchConfig: TaskLaunchConfig) {
+  private build(taskLaunchConfig: TaskLaunchConfig): Builder {
     const formGroup: FormGroup = new FormGroup({});
 
     const getValue = (defaultValue) => !defaultValue ? '' : defaultValue;
@@ -557,6 +580,12 @@ export class BuilderComponent implements OnInit, OnDestroy {
       builderAppsProperties,
       builderDeploymentProperties,
       taskLaunchConfig,
+
+      deployers,
+      appsVersion,
+      globalControls,
+      specificPlatformControls,
+
       errors: {
         global: [],
         app: []
