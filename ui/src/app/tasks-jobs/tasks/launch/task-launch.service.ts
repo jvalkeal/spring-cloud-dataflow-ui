@@ -118,11 +118,11 @@ export class TaskLaunchService {
               }))
           ))
           ;
+        const ctrOptions = this.taskService.getCtrOptions();
 
-
-        return zip(of(task), of(taskConversion), of(platforms), appVersions);
+        return zip(of(task), of(taskConversion), of(platforms), appVersions, ctrOptions);
       }))
-      .pipe(map(([task, taskConversion, platforms, appVersions]) => {
+      .pipe(map(([task, taskConversion, platforms, appVersions, ctrOptions]) => {
         const c = new TaskLaunchConfig();
         c.id = id;
 
@@ -130,6 +130,7 @@ export class TaskLaunchService {
         // console.log('XXX2', taskConversion);
         // console.log('XXX3', platforms);
         // console.log('XXX4', appVersions);
+        console.log('XXX5', ctrOptions);
 
         c.apps = taskConversion.graph.nodes
           .filter(node => node.name !== 'START' && node.name !== 'END')

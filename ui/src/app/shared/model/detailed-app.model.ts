@@ -42,6 +42,15 @@ export class ConfigurationMetadataProperty {
   }
 }
 
+export class ConfigurationMetadataPropertyList {
+  static parse(input): Array<ConfigurationMetadataProperty> {
+    if (input) {
+      return input.map(ConfigurationMetadataProperty.parse);
+    }
+    return [];
+  }
+}
+
 export class DetailedApp extends App {
   options: ConfigurationMetadataProperty[];
 
