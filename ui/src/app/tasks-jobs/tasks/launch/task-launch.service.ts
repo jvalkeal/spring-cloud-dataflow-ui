@@ -81,13 +81,9 @@ export class TaskLaunchService {
       .pipe(flatMap((task: Task) => {
         const taskConversion = this.toolsService.parseTaskTextToGraph(task.dslText);
         const platforms = this.taskService.getPlatforms();
-        // this.appService.getAppVersions('', ApplicationType.task);
         return zip(of(task), taskConversion, platforms);
       }))
       .pipe(flatMap(([task, taskConversion, platforms]) => {
-
-        console.log('TEST1', ApplicationType.task.toString());
-
         const appNames = taskConversion.graph.nodes
           .filter(node => node.name !== 'START' && node.name !== 'END')
           .map(node => {

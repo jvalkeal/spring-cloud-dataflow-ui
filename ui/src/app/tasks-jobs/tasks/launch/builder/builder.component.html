@@ -1,5 +1,5 @@
 <div *ngIf="builder$ | async as builder; else loading">
-  <form class="form-horizontal" novalidate (ngSubmit)="deployStream()">
+  <form class="form-horizontal" novalidate (ngSubmit)="launchTask()">
     <div>
       <div class="tab-pane">
         <div class="builder" [formGroup]="builder.formGroup">
@@ -427,9 +427,9 @@
           </button>
         </div>
         <div>
-          <a tabindex="200" id="btn-cancel" class="btn btn-default" routerLink="/streams/list">Cancel</a>
+          <a tabindex="200" id="btn-cancel" class="btn btn-default" routerLink="/tasks-jobs/tasks">Cancel</a>
           <button tabindex="200" id="btn-deploy-builder" type="submit" class="btn btn-primary">
-            <span >Launch task</span>
+            <span>Launch task</span>
           </button>
         </div>
       </div>

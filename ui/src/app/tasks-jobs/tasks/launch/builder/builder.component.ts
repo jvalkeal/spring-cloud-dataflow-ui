@@ -3,14 +3,13 @@ import {
   Output, ViewChild
 } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { TaskLaunchService } from '../task-launch.service';
-import { TaskService } from '../../../../shared/api/task.service';
 import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { TaskLaunchValidator } from '../task-launch.validator';
 import { Properties } from 'spring-flo';
+import { TaskLaunchService } from '../task-launch.service';
+import { TaskLaunchValidator } from '../task-launch.validator';
 import { NotificationService } from '../../../../shared/service/notification.service';
-import { Task, TaskLaunchConfig } from '../../../../shared/model/task.model';
+import { TaskLaunchConfig } from '../../../../shared/model/task.model';
 import {
   GroupPropertiesSource, GroupPropertiesSources, PropertiesGroupsDialogComponent
 } from '../../../../flo/shared/properties-groups/properties-groups-dialog.component';
@@ -94,9 +93,9 @@ export class BuilderComponent implements OnInit, OnDestroy {
   @Output() exportProperties = new EventEmitter();
 
   /**
-   * Emit for request deploy
+   * Emit for request launch
    */
-  @Output() deploy = new EventEmitter();
+  @Output() launch = new EventEmitter();
 
   /**
    * Emit for request copy
@@ -343,7 +342,6 @@ export class BuilderComponent implements OnInit, OnDestroy {
       const arr = line.split(/=(.*)/);
       const key = arr[0] as string;
       const value = arr[1] as string;
-      console.log('DDD1', line);
       if (TaskLaunchService.platform.is(key)) {
         builder.formGroup.get('platform').setValue(value);
         const platform = builder.taskLaunchConfig.platform.values.find(p => p.name === value);
@@ -889,11 +887,11 @@ export class BuilderComponent implements OnInit, OnDestroy {
   /**
    * Emit a request deploy
    */
-  deployStream() {
+  launchTask() {
     if (!this.isSubmittable(this.refBuilder)) {
       this.notificationService.error('An error occurred', 'Some field(s) are invalid.');
     } else {
-      this.deploy.emit(this.getProperties());
+      this.launch.emit(this.getProperties());
     }
   }
 

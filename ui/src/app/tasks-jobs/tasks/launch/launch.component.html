@@ -21,7 +21,7 @@
                                    [isDeployed]="isDeployed(task)"
                                    (exportProperties)="runExport($event)"
                                    (update)="update($event)"
-                                   (deploy)="runDeploy($event)"
+                                   (launch)="runLaunch($event)"
                                    (copyProperties)="runCopy($event)">
         </app-task-launch-builder>
       </clr-tab-content>
@@ -34,7 +34,7 @@
                                      [isDeployed]="isDeployed(task)"
                                      (exportProperties)="runExport($event)"
                                      (update)="update($event)"
-                                     (deploy)="runDeploy($event)"
+                                     (launch)="runLaunch($event)"
                                      (copyProperties)="runCopy($event)">
         </app-task-launch-free-text>
       </clr-tab-content>

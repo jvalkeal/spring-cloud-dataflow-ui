@@ -189,11 +189,12 @@ export class LaunchComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Run deploy
+   * Run launch
    * Update the properties
    * @param value Array of properties
    */
-  runDeploy(value: Array<string>) {
+  runLaunch(value: Array<string>) {
+    console.log('Hi not yet launch supported');
     this.isDeploying = true;
     this.update(value);
     const propertiesMap = {};
