@@ -76,6 +76,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
 
   @ViewChild('appPropertiesModal', { static: true }) appPropertiesModal: PropertiesDialogComponent;
   @ViewChild('groupsPropertiesModal', { static: true }) groupsPropertiesModal: PropertiesGroupsDialogComponent;
+  @ViewChild('ctrPropertiesModal', { static: true }) ctrPropertiesModal: PropertiesGroupsDialogComponent;
 
   /**
    * Stream ID
@@ -778,7 +779,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
     });
   }
 
-  openCtrProperties(builder) {
+  openCtrProperties(builder: Builder) {
     const options = builder.ctrProperties;
 
     // jee.foo.bar-xxx -> jee.foo
@@ -812,12 +813,12 @@ export class BuilderComponent implements OnInit, OnDestroy {
 
     // get new props from modal
     groupPropertiesSources.confirm.subscribe((properties: Array<any>) => {
-      builder.builderDeploymentProperties = properties;
+      builder.ctrProperties = properties;
       this.changeDetector.markForCheck();
     });
-    this.groupsPropertiesModal.setData(groupPropertiesSources);
-    this.groupsPropertiesModal.title = `Ctr properties`;
-    this.groupsPropertiesModal.isOpen = true;
+    this.ctrPropertiesModal.setData(groupPropertiesSources);
+    this.ctrPropertiesModal.title = `Ctr properties`;
+    this.ctrPropertiesModal.isOpen = true;
   }
 
   /**
