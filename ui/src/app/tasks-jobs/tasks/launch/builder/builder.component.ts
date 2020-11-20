@@ -6,6 +6,7 @@ import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/for
 import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Properties } from 'spring-flo';
+import PropertiesSource = Properties.PropertiesSource;
 import { TaskLaunchService } from '../task-launch.service';
 import { TaskLaunchValidator } from '../task-launch.validator';
 import { NotificationService } from '../../../../shared/service/notification.service';
@@ -16,6 +17,7 @@ import {
 import { App } from '../../../../shared/model/app.model';
 import { PropertiesDialogComponent } from '../../../../flo/shared/properties/properties-dialog.component';
 import { StreamAppPropertiesSource, StreamHead } from '../../../../flo/stream/properties/stream-properties-source';
+import { TaskPropertiesDialogComponent } from '../../../../flo/task/properties/task-properties-dialog-component';
 
 export class AppPropertiesSource implements StreamAppPropertiesSource {
 
@@ -37,7 +39,24 @@ export class AppPropertiesSource implements StreamAppPropertiesSource {
   applyChanges(properties: Properties.Property[]): void {
     this.confirm.emit(properties);
   }
+}
 
+export class CtrPropertiesSource implements PropertiesSource {
+
+  private options: Array<any>;
+  public confirm = new EventEmitter();
+
+  constructor(options: Array<any>) {
+    this.options = options;
+  }
+
+  getProperties(): Promise<Properties.Property[]> {
+    return of(this.options).toPromise();
+  }
+
+  applyChanges(properties: Properties.Property[]): void {
+    this.confirm.emit(properties);
+  }
 }
 
 export interface Builder {
@@ -75,7 +94,8 @@ export class BuilderComponent implements OnInit, OnDestroy {
 
   @ViewChild('appPropertiesModal', { static: true }) appPropertiesModal: PropertiesDialogComponent;
   @ViewChild('groupsPropertiesModal', { static: true }) groupsPropertiesModal: PropertiesGroupsDialogComponent;
-  @ViewChild('ctrPropertiesModal', { static: true }) ctrPropertiesModal: PropertiesGroupsDialogComponent;
+  // @ViewChild('ctrPropertiesModal', { static: true }) ctrPropertiesModal: PropertiesGroupsDialogComponent;
+  @ViewChild('ctrPropertiesModal', { static: true }) ctrPropertiesModal: TaskPropertiesDialogComponent;
 
   /**
    * Task
@@ -775,44 +795,17 @@ export class BuilderComponent implements OnInit, OnDestroy {
   openCtrProperties(builder: Builder) {
     const options = builder.ctrProperties;
 
-    // jee.foo.bar-xxx -> jee.foo
-    const deduceKey = (key) => {
-      return key.substring(0, key.lastIndexOf('.'));
-    };
+    const propertiesSource = new CtrPropertiesSource(options);
 
-    // grouping all properties by a deduced key
-    const groupBy = (items, key) => items.reduce(
-      (result, item) => {
-        const groupKey = deduceKey(item[key]);
-        return ({
-          ...result,
-          [groupKey]: [...(result[groupKey] || []), item],
-        });
-      }, {}
-    );
-
-    // setup groups and sort alphabetically by group titles
-    let groupedPropertiesSources: Array<GroupPropertiesSource> = [];
-    const groupedEntries: { [s: string]: Array<any>; } = groupBy(options, 'id');
-    Object.entries(groupedEntries).forEach(v => {
-      const groupedPropertiesSource = new GroupPropertiesSource(Object.assign([], v[1]
-        .map((property) => Object.assign({}, property))), v[0]);
-      groupedPropertiesSources.push(groupedPropertiesSource);
-    });
-    groupedPropertiesSources = groupedPropertiesSources.sort(((a, b) => {
-      return a.title === b.title ? 0 : a.title < b.title ? -1 : 1;
-    }));
-    const groupPropertiesSources = new GroupPropertiesSources(groupedPropertiesSources);
-
-    // get new props from modal
-    groupPropertiesSources.confirm.subscribe((properties: Array<any>) => {
+    propertiesSource.confirm.subscribe((properties: Array<any>) => {
       builder.ctrProperties = properties;
       this.changeDetector.markForCheck();
     });
-    this.ctrPropertiesModal.setData(groupPropertiesSources);
+
+    this.ctrPropertiesModal.setData(propertiesSource);
     this.ctrPropertiesModal.title = `Ctr properties`;
     this.ctrPropertiesModal.isOpen = true;
-  }
+ }
 
   /**
    * Load the properties of an app
