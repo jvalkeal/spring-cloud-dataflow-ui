@@ -17,12 +17,11 @@
       <button clrTabLink id="link1">Builder</button>
       <clr-tab-content id="content1" *clrIfActive="true">
         <app-task-launch-builder [properties]="properties"
-                                   [id]="task.name"
-                                   [isDeployed]="isDeployed(task)"
-                                   (exportProperties)="runExport($event)"
-                                   (update)="update($event)"
-                                   (launch)="runLaunch($event)"
-                                   (copyProperties)="runCopy($event)">
+                                  [task]="task"
+                                  (exportProperties)="runExport($event)"
+                                  (update)="update($event)"
+                                  (launch)="runLaunch($event)"
+                                  (copyProperties)="runCopy($event)">
         </app-task-launch-builder>
       </clr-tab-content>
     </clr-tab>
@@ -30,12 +29,11 @@
       <button clrTabLink>Freetext</button>
       <clr-tab-content *clrIfActive>
         <app-task-launch-free-text [properties]="properties"
-                                     [id]="task.name"
-                                     [isDeployed]="isDeployed(task)"
-                                     (exportProperties)="runExport($event)"
-                                     (update)="update($event)"
-                                     (launch)="runLaunch($event)"
-                                     (copyProperties)="runCopy($event)">
+                                    [task]="task"
+                                    (exportProperties)="runExport($event)"
+                                    (update)="update($event)"
+                                    (launch)="runLaunch($event)"
+                                    (copyProperties)="runCopy($event)">
         </app-task-launch-free-text>
       </clr-tab-content>
     </clr-tab>

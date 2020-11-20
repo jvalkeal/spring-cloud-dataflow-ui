@@ -4,6 +4,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { TaskLaunchValidator } from '../task-launch.validator';
 import { NotificationService } from '../../../../shared/service/notification.service';
+import { Task } from '../../../../shared/model/task.model';
 
 /**
  * Free Text Component
@@ -20,9 +21,14 @@ import { NotificationService } from '../../../../shared/service/notification.ser
 export class FreeTextComponent implements OnInit, OnDestroy {
 
   /**
-   * Stream ID
+   * Task
    */
-  @Input() id: string;
+  @Input() task: Task;
+
+  /**
+   * Properties to load
+   */
+  @Input() properties: Array<string> = [];
 
   /**
    * Emit on destroy component with the current value
@@ -43,16 +49,6 @@ export class FreeTextComponent implements OnInit, OnDestroy {
    * Emit for request deploy
    */
   @Output() deploy = new EventEmitter();
-
-  /**
-   * Properties to load
-   */
-  @Input() properties: Array<string> = [];
-
-  /**
-   * Is Deployed
-   */
-  @Input() isDeployed = false;
 
   /**
    * Form

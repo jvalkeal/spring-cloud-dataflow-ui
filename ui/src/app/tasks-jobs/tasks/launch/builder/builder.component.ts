@@ -9,7 +9,7 @@ import { Properties } from 'spring-flo';
 import { TaskLaunchService } from '../task-launch.service';
 import { TaskLaunchValidator } from '../task-launch.validator';
 import { NotificationService } from '../../../../shared/service/notification.service';
-import { TaskLaunchConfig } from '../../../../shared/model/task.model';
+import { Task, TaskLaunchConfig } from '../../../../shared/model/task.model';
 import {
   GroupPropertiesSource, GroupPropertiesSources, PropertiesGroupsDialogComponent
 } from '../../../../flo/shared/properties-groups/properties-groups-dialog.component';
@@ -78,9 +78,14 @@ export class BuilderComponent implements OnInit, OnDestroy {
   @ViewChild('ctrPropertiesModal', { static: true }) ctrPropertiesModal: PropertiesGroupsDialogComponent;
 
   /**
-   * Stream ID
+   * Task
    */
-  @Input() id: string;
+  @Input() task: Task;
+
+  /**
+   * Properties to load
+   */
+  @Input() properties: Array<string> = [];
 
   /**
    * Emits on destroy component with the current value
@@ -101,16 +106,6 @@ export class BuilderComponent implements OnInit, OnDestroy {
    * Emit for request copy
    */
   @Output() copyProperties = new EventEmitter();
-
-  /**
-   * Properties to load
-   */
-  @Input() properties: Array<string> = [];
-
-  /**
-   * Is Deployed
-   */
-  @Input() isDeployed = false;
 
   /**
    * Builder observable
@@ -146,7 +141,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.builder$ = this.taskLaunchService
-      .config(this.id)
+      .config(this.task.name)
       .pipe(map((taskLaunchConfig) => this.build(taskLaunchConfig)))
       .pipe(map((builder) => this.populate(builder)))
       .pipe(map((builder) => this.populateApp(builder)));
