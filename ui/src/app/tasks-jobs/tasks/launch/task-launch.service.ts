@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { from, Observable, of, pipe, zip } from 'rxjs';
+import { from, Observable, of, zip } from 'rxjs';
 import { map, mergeMap, flatMap, distinct } from 'rxjs/operators';
 import { Task, TaskLaunchConfig } from '../../../shared/model/task.model';
 import { TaskService } from '../../../shared/api/task.service';
-import { App, ApplicationType } from '../../../shared/model/app.model';
+import { ApplicationType } from '../../../shared/model/app.model';
 import { AppService } from '../../../shared/api/app.service';
 import { ConfigurationMetadataProperty, DetailedApp } from '../../../shared/model/detailed-app.model';
 import { Utils } from '../../../flo/shared/support/utils';

@@ -1,9 +1,9 @@
-<form [formGroup]="formGroup" (submit)="deployStream()">
+<form [formGroup]="formGroup" (submit)="launchTask()">
   <p>Enter the list of arguments into the text area field below.</p>
 
   <div class="form-textarea">
     <div class="numbers">
-      <ng-template ngFor let-item [ngForOf]="lines">
+      <ng-template ngFor let-item [ngForOf]="alines">
         <div class="number">
           <span [class.invalid]="!item.valid">{{item.label}}</span>
         </div>
@@ -15,9 +15,9 @@
     <div class="btn-group">
       <clr-tooltip>
         <button clrTooltipTrigger type="button" class="btn btn-sm btn-file btn btn-secondary"
-                (click)="propertiesFile.click()" style="border-right: 0;">
-          <input formControlName="file" id="propertiesFile" name="propertiesFile" type="file" #propertiesFile
-                 (change)="fileChange($event)"/>
+                (click)="argumentsFile.click()" style="border-right: 0;">
+          <input formControlName="afile" id="argumentsFile" name="argumentsFile" type="file" #argumentsFile
+                 (change)="argumentsFileChange($event)"/>
           Import a local file
         </button>
         <clr-tooltip-content clrPosition="top-right" clrSize="lg" *clrIfOpen>
@@ -29,7 +29,7 @@
         Export
       </button>
       <button id="btn-copy" type="button" class="btn btn-sm btn btn-secondary"
-              (click)="copyToClipboard()">
+              (click)="copyArgsToClipboard()">
         Copy to Clipboard
       </button>
     </div>
@@ -39,7 +39,7 @@
 
   <div class="form-textarea">
     <div class="numbers">
-      <ng-template ngFor let-item [ngForOf]="lines">
+      <ng-template ngFor let-item [ngForOf]="plines">
         <div class="number">
           <span [class.invalid]="!item.valid">{{item.label}}</span>
         </div>
@@ -52,8 +52,8 @@
       <clr-tooltip>
         <button clrTooltipTrigger type="button" class="btn btn-sm btn-file btn btn-secondary"
                 (click)="propertiesFile.click()" style="border-right: 0;">
-          <input formControlName="file" id="propertiesFile" name="propertiesFile" type="file" #propertiesFile
-                 (change)="fileChange($event)"/>
+          <input formControlName="pfile" id="propertiesFile" name="propertiesFile" type="file" #propertiesFile
+                 (change)="propertiesFileChange($event)"/>
           Import a local file
         </button>
         <clr-tooltip-content clrPosition="top-right" clrSize="lg" *clrIfOpen>
@@ -65,7 +65,7 @@
         Export
       </button>
       <button id="btn-copy" type="button" class="btn btn-sm btn btn-secondary"
-              (click)="copyToClipboard()">
+              (click)="copyPropsToClipboard()">
         Copy to Clipboard
       </button>
     </div>

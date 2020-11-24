@@ -28,6 +28,7 @@ export class LaunchComponent implements OnInit, OnDestroy {
   state: any = { view: 'builder' };
   ngUnsubscribe$: Subject<any> = new Subject();
   properties: Array<string> = [];
+  arguments: Array<string> = [];
   ignoreProperties: Array<string> = [];
 
   constructor(
@@ -101,8 +102,12 @@ export class LaunchComponent implements OnInit, OnDestroy {
   /**
    * Update the properties
    */
-  update(value: Array<string>) {
+  updateProperties(value: Array<string>) {
     this.properties = value.sort();
+  }
+
+  updateArguments(value: Array<string>) {
+    this.arguments = value.sort();
   }
 
   /**
@@ -110,8 +115,8 @@ export class LaunchComponent implements OnInit, OnDestroy {
    * Update the properties
    * @param value Array of properties
    */
-  runExport(value: Array<string>) {
-    this.update(value);
+  runPropertiesExport(value: Array<string>) {
+    this.updateProperties(value);
     if (this.properties.length === 0) {
       this.notificationService.error('An error occured', 'There are no properties to export.');
     } else {
@@ -123,13 +128,26 @@ export class LaunchComponent implements OnInit, OnDestroy {
     }
   }
 
+  runArgumentsExport(value: Array<string>) {
+    this.updateArguments(value);
+    if (this.arguments.length === 0) {
+      this.notificationService.error('An error occured', 'There are no arguments to export.');
+    } else {
+      const argumentsText = this.arguments.join('\n');
+      const date = DateTime.local().toFormat('yyyy-MM-HHmmss');
+      const filename = `${this.task.name}_${date}.txt`;
+      const blob = new Blob([argumentsText], { type: 'text/plain' });
+      saveAs(blob, filename);
+    }
+  }
+
   /**
    * Run copy to clipboard
    * Update the properties
    * @param value Array of properties
    */
-  runCopy(value: Array<string>) {
-    this.update(value);
+  runPropertiesCopy(value: Array<string>) {
+    this.updateProperties(value);
     if (this.properties.length === 0) {
       this.notificationService.error('An error occured', 'There are no properties to copy.');
     } else {
@@ -139,15 +157,27 @@ export class LaunchComponent implements OnInit, OnDestroy {
     }
   }
 
+  runArgumentsCopy(value: Array<string>) {
+    this.updateArguments(value);
+    if (this.arguments.length === 0) {
+      this.notificationService.error('An error occured', 'There are no arguments to copy.');
+    } else {
+      const argumentsText = this.arguments.join('\n');
+      this.clipboardCopyService.executeCopy(argumentsText);
+      this.notificationService.success('Copy to clipboard', 'The arguments have been copied to your clipboard.');
+    }
+  }
+
   /**
    * Run launch
    * Update the properties
    * @param value Array of properties
    */
-  runLaunch(value: Array<string>) {
+  runLaunch(props: Array<string>, args: Array<string>) {
     this.isLaunching = true;
-    this.update(value);
-    const prepared = this.prepareParams(this.task.name, [], this.properties);
+    this.updateProperties(props);
+    this.updateArguments(args);
+    const prepared = this.prepareParams(this.task.name, this.arguments, this.properties);
     this.taskService.launch(prepared.name, prepared.args, prepared.props)
       .subscribe(() => {
           this.notificationService.success('Launch success', `Successfully launched task definition "${this.task.name}"`);

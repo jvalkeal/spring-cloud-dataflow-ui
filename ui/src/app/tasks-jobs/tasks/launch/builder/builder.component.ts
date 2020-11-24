@@ -99,34 +99,11 @@ export class BuilderComponent implements OnInit, OnDestroy {
   @ViewChild('groupsPropertiesModal', { static: true }) groupsPropertiesModal: PropertiesGroupsDialogComponent;
   @ViewChild('ctrPropertiesModal', { static: true }) ctrPropertiesModal: TaskPropertiesDialogComponent;
 
-  /**
-   * Task
-   */
   @Input() task: Task;
-
-  /**
-   * Properties to load
-   */
   @Input() properties: Array<string> = [];
-
-  /**
-   * Emits on destroy component with the current value
-   */
-  @Output() update = new EventEmitter();
-
-  /**
-   * Emit for request export, see parent component.
-   */
+  @Output() updateProperties = new EventEmitter();
   @Output() exportProperties = new EventEmitter();
-
-  /**
-   * Emit for request launch, see parent component.
-   */
   @Output() launch = new EventEmitter();
-
-  /**
-   * Emit for request copy, see parent component.
-   */
   @Output() copyProperties = new EventEmitter();
 
   /**
@@ -175,7 +152,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
    */
   ngOnDestroy() {
     if (this.refBuilder) {
-      this.update.emit(this.getProperties());
+      this.updateProperties.emit(this.getProperties());
     }
   }
 

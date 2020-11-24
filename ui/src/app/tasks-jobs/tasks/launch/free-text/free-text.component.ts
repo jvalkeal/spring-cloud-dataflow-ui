@@ -8,9 +8,10 @@ import { Task } from '../../../../shared/model/task.model';
 
 /**
  * Free Text Component
- * Provides a rich textarea with a semantic validation of the properties
+ * Provides a rich textarea with a semantic validation of the properties and the arguments.
  *
  * @author Damien Vitrac
+ * @author Janne Valkealahti
  */
 @Component({
   selector: 'app-task-launch-free-text',
@@ -20,45 +21,26 @@ import { Task } from '../../../../shared/model/task.model';
 })
 export class FreeTextComponent implements OnInit, OnDestroy {
 
-  /**
-   * Task
-   */
   @Input() task: Task;
-
-  /**
-   * Properties to load
-   */
   @Input() properties: Array<string> = [];
-
-  /**
-   * Emit on destroy component with the current value
-   */
-  @Output() update = new EventEmitter();
-
-  /**
-   * Emit for request export
-   */
+  @Input() arguments: Array<string> = [];
+  @Output() updateProperties = new EventEmitter();
+  @Output() updateArguments = new EventEmitter();
   @Output() exportProperties = new EventEmitter();
-
-  /**
-   * Emit for request copy
-   */
   @Output() copyProperties = new EventEmitter();
+  @Output() exportArguments = new EventEmitter();
+  @Output() copyArguments = new EventEmitter();
+  @Output() launch = new EventEmitter<{props: string[], args: string[]}>();
 
-  /**
-   * Emit for request launch, see parent component.
-   */
-  @Output() launch = new EventEmitter();
-
-  /**
-   * Form
-   */
   formGroup: FormGroup;
 
-  /**
-   * Line of the textarea
-   */
-  lines: Array<any> = [{
+  alines: Array<any> = [{
+    label: 1,
+    valid: true,
+    message: ''
+  }];
+
+  plines: Array<any> = [{
     label: 1,
     valid: true,
     message: ''
@@ -67,12 +49,13 @@ export class FreeTextComponent implements OnInit, OnDestroy {
   /**
    * State of the form
    */
-  isSubmittable = false;
+  // isLaunchable = false;
 
   /**
    * State of the form
    */
-  isExportable = false;
+  isPropertiesExportable = false;
+  isArgumentsExportable = false;
 
   /**
    * Constructor
@@ -82,24 +65,34 @@ export class FreeTextComponent implements OnInit, OnDestroy {
     this.formGroup = new FormGroup({
       ainput: new FormControl(),
       pinput: new FormControl(),
-      file: new FormControl('')
+      afile: new FormControl(''),
+      pfile: new FormControl('')
     });
   }
 
-  /**
-   * On Init
-   */
   ngOnInit() {
     this.formGroup.get('pinput').valueChanges
       .subscribe((value) => {
-        this.valueChanges(value);
+        this.propertiesValueChanges(value);
       });
 
     this.formGroup.get('pinput').setValue(this.properties.join('\n'));
+    this.formGroup.get('ainput').valueChanges
+      .subscribe((value) => {
+        this.argumentsValueChanges(value);
+      });
+
+    this.formGroup.get('ainput').setValue(this.arguments.join('\n'));
   }
 
-  private getCleanProperties() {
-    return this.formGroup.get('pinput').value.toString()
+  private getCleanProperties(): string[] {
+    return (this.formGroup.get('pinput').value as string)
+      .split('\n')
+      .filter((line) => (line.replace(' ', '') !== ''));
+  }
+
+  private getCleanArguments(): string[] {
+    return (this.formGroup.get('ainput').value as string)
       .split('\n')
       .filter((line) => (line.replace(' ', '') !== ''));
   }
@@ -108,17 +101,15 @@ export class FreeTextComponent implements OnInit, OnDestroy {
    * On destroy, emit the update event
    */
   ngOnDestroy() {
-    this.update.emit(this.getCleanProperties());
+    this.updateProperties.emit(this.getCleanProperties());
+    this.updateArguments.emit(this.getCleanArguments());
   }
 
-  /**
-   * Textarea value Change
-   */
-  valueChanges(value: string) {
+  propertiesValueChanges(value: string) {
     let countInvalidProperties = 0;
     let countValidProperties = 0;
 
-    this.lines = (value.toString() || ' ')
+    this.plines = (value.toString() || ' ')
       .split('\n')
       .map((line: string, index: number) => {
         const lineClean = line.replace(' ', '');
@@ -137,17 +128,42 @@ export class FreeTextComponent implements OnInit, OnDestroy {
         };
       });
 
-    this.isSubmittable = (countInvalidProperties === 0);
-    this.isExportable = (countInvalidProperties + countValidProperties) > 0;
+    // this.isLaunchable = (countInvalidProperties === 0);
+    this.isPropertiesExportable = (countInvalidProperties + countValidProperties) > 0;
+  }
+
+  argumentsValueChanges(value: string) {
+    let countInvalidArguments = 0;
+    let countValidArguments = 0;
+
+    this.alines = (value.toString() || ' ')
+      .split('\n')
+      .map((line: string, index: number) => {
+        const lineClean = line.replace(' ', '');
+        const message = TaskLaunchValidator.property(lineClean);
+        if (lineClean !== '') {
+          if (message === true) {
+            countValidArguments++;
+          } else {
+            countInvalidArguments++;
+          }
+        }
+        return {
+          label: (index + 1),
+          valid: (message === true),
+          message: (message !== true) ? message : ''
+        };
+      });
+
+    // this.isLaunchable = (countInvalidProperties === 0);
+    this.isArgumentsExportable = (countInvalidArguments + countValidArguments) > 0;
   }
 
   /**
    * Parse and load a file to the properties control
    * Produce an exception when the user cancel the file dialog
-   *
-   * @param {Blob} contents File
    */
-  fileChange(contents) {
+  propertiesFileChange(contents) {
     try {
       const reader = new FileReader();
       reader.onloadend = (e) => {
@@ -160,23 +176,38 @@ export class FreeTextComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Emit a request export
+   * Parse and load a file to the arguments control
+   * Produce an exception when the user cancel the file dialog
    */
+  argumentsFileChange(contents) {
+    try {
+      const reader = new FileReader();
+      reader.onloadend = (e) => {
+        this.formGroup.get('ainput').setValue(reader.result);
+        this.formGroup.get('file').setValue('');
+      };
+      reader.readAsText(contents.target.files[0]);
+    } catch (e) {
+    }
+  }
+
   exportProps() {
     this.exportProperties.emit(this.getCleanProperties());
   }
 
-  /**
-   * Copye to clipboard
-   */
-  copyToClipboard() {
+  exportArgs() {
+    this.exportArguments.emit(this.getCleanArguments());
+  }
+
+  copyPropsToClipboard() {
     this.copyProperties.emit(this.getCleanProperties());
   }
 
-  /**
-   * Emit properties to launch Output.
-   */
+  copyArgsToClipboard() {
+    this.copyArguments.emit(this.getCleanArguments());
+  }
+
   launchTask() {
-    this.launch.emit(this.getCleanProperties());
+    this.launch.emit({props: this.getCleanProperties(), args: this.getCleanArguments()});
   }
 }
