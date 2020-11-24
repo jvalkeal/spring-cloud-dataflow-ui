@@ -151,6 +151,7 @@ export class LaunchComponent implements OnInit, OnDestroy {
     this.taskService.launch(prepared.name, prepared.args, prepared.props)
       .subscribe(() => {
           this.notificationService.success('Launch success', `Successfully launched task definition "${this.task.name}"`);
+          this.router.navigate(['/tasks-jobs/tasks']);
         },
         error => {
           const err = error.message ? error.message : error.toString();

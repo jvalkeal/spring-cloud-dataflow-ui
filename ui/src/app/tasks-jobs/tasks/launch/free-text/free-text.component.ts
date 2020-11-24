@@ -46,9 +46,9 @@ export class FreeTextComponent implements OnInit, OnDestroy {
   @Output() copyProperties = new EventEmitter();
 
   /**
-   * Emit for request deploy
+   * Emit for request launch, see parent component.
    */
-  @Output() deploy = new EventEmitter();
+  @Output() launch = new EventEmitter();
 
   /**
    * Form
@@ -174,14 +174,9 @@ export class FreeTextComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Emit a request deploy
+   * Emit properties to launch Output.
    */
-  deployStream() {
-    if (!this.isSubmittable) {
-      this.notificationService.error('Invalid properties', 'Some line(s) are invalid.');
-    } else {
-      this.deploy.emit(this.getCleanProperties());
-    }
+  launchTask() {
+    this.launch.emit(this.getCleanProperties());
   }
-
 }
