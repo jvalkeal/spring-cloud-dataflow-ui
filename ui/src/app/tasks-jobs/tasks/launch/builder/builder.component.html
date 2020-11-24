@@ -149,11 +149,8 @@
             <!-- 12 -->
             <div *ngIf="state.arguments">
               <div class="line-body">
-                <!-- <input tabindex="{{50 + 1}}" placeholder="Enter a value" class="clr-input"
-                       type="text"/> -->
               </div>
             </div>
-
           </div>
 
           <!-- col 2 global -->
@@ -272,7 +269,23 @@
                 <input tabindex="{{50 + 2}}" placeholder="Enter a value" class="clr-input"
                        type="text"/>
               </div>
+              <div class="line-body">
+                <input tabindex="{{50 + 2}}" placeholder="Enter a value" class="clr-input"
+                       type="text"/>
+              </div>
             </div>
+            <!-- <div *ngIf="state.app">
+              <div class="line-body"></div>
+              <div class="line-body"></div>
+              <div formArrayName="global">
+                <div class="line-body" *ngFor="let f of builder.globalControls.controls;let i = index"
+                     [formGroupName]="i"
+                     [class.has-error]="builder.globalControls.controls[i].get('global').invalid">
+                  <input tabindex="{{102 + i}}" placeholder="Enter a value" class="clr-input"
+                         formControlName="global" type="text"/>
+                </div>
+              </div>
+            </div> -->
 
           </div>
 
@@ -412,7 +425,67 @@
                   <input tabindex="{{50 + 3}}" placeholder="Enter a value" class="clr-input"
                          type="text"/>
                 </div>
+                <div class="line-body">
+                  <input tabindex="{{50 + 3}}" placeholder="Enter a value" class="clr-input"
+                         type="text"/>
+                </div>
               </div>
+
+
+              <!-- <div *ngIf="state.app">
+                <div class="line-body" [class.has-error]="app.optionsState.isInvalid">
+                  <div formGroupName="appsVersion">
+                    <div class="cell">
+                      <clr-select-container style="margin-top:0;">
+                        <select tabindex="{{100}}" [formControlName]="app.name" clrSelect>
+                          <option value="">Default version ({{app.version}})</option>
+                          <option *ngFor="let version of app.versions" [value]="version">
+                            {{version}}
+                          </option>
+                          <option *ngIf="app.optionsState.isInvalid"
+                                  [value]="builder.formGroup.get('appsVersion').get(app.name).value">
+                            {{builder.formGroup.get('appsVersion').get(app.name).value}} (invalid)
+                          </option>
+                        </select>
+                      </clr-select-container>
+                    </div>
+                  </div>
+                </div>
+                <div class="line-body" [class.has-error]="app.optionsState.isInvalid">
+                  <div
+                    *ngIf="app.options && !app.optionsState.isLoading && !app.optionsState.isOnError && !app.optionsState.isInvalid"
+                    class="form-control form-control-label">
+                    <div *ngIf="app.options.length > 0">
+                      <strong>{{getAppProperties(builder.builderDeploymentProperties, app.name).length}}</strong>
+                      <span> /</span> {{app.options.length}} properties
+                      <button tabindex="{{101}}" type="button" (click)="openApp(builder, app)"
+                              class="btn btn-sm btn-secondary">
+                        Edit
+                      </button>
+                    </div>
+                    <div *ngIf="app.options.length == 0">
+                      <strong>No properties</strong>
+                    </div>
+                  </div>
+                  <div *ngIf="app.optionsState.isLoading" class="form-control form-control-label">
+                    Loading ...
+                  </div>
+                  <div *ngIf="app.optionsState.isOnError" class="form-control form-control-label">
+                    Error loading
+                  </div>
+                  <div *ngIf="app.optionsState.isInvalid" class="form-control form-control-label">
+                    Invalid version
+                  </div>
+                </div>
+                <div formArrayName="global">
+                  <div class="line-body" *ngFor="let f of builder.globalControls.controls;let i = index"
+                       [formGroupName]="i"
+                       [class.has-error]="builder.globalControls.controls[i].get(app.name).invalid">
+                    <input tabindex="{{102 + i}}" placeholder="Enter a value" class="clr-input"
+                           [formControlName]="app.name" type="text"/>
+                  </div>
+                </div>
+              </div> -->
 
 
             </div>

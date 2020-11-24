@@ -20,7 +20,6 @@ import { StreamAppPropertiesSource, StreamHead } from '../../../../flo/stream/pr
 import { TaskPropertiesDialogComponent } from '../../../../flo/task/properties/task-properties-dialog-component';
 
 export class AppPropertiesSource implements StreamAppPropertiesSource {
-
   private options: Array<any>;
   public confirm = new EventEmitter();
 
@@ -42,7 +41,6 @@ export class AppPropertiesSource implements StreamAppPropertiesSource {
 }
 
 export class CtrPropertiesSource implements PropertiesSource {
-
   private options: Array<any>;
   public confirm = new EventEmitter();
 
@@ -62,7 +60,6 @@ export class CtrPropertiesSource implements PropertiesSource {
 export interface Builder {
   taskLaunchConfig: TaskLaunchConfig;
   formGroup: FormGroup;
-  // builderDeploymentProperties: any;
   builderAppsProperties: any;
 
   deployers: FormArray;
@@ -76,7 +73,12 @@ export interface Builder {
   };
 
   ctrProperties: any[];
-  // ctrControls: any;
+
+  // args for global and task apps
+  arguments: {
+    global: string[];
+    apps: {[name: string]: string[]};
+  };
 
   errors: {
     global: [],
@@ -94,7 +96,6 @@ export class BuilderComponent implements OnInit, OnDestroy {
 
   @ViewChild('appPropertiesModal', { static: true }) appPropertiesModal: PropertiesDialogComponent;
   @ViewChild('groupsPropertiesModal', { static: true }) groupsPropertiesModal: PropertiesGroupsDialogComponent;
-  // @ViewChild('ctrPropertiesModal', { static: true }) ctrPropertiesModal: PropertiesGroupsDialogComponent;
   @ViewChild('ctrPropertiesModal', { static: true }) ctrPropertiesModal: TaskPropertiesDialogComponent;
 
   /**
@@ -113,17 +114,17 @@ export class BuilderComponent implements OnInit, OnDestroy {
   @Output() update = new EventEmitter();
 
   /**
-   * Emit for request export
+   * Emit for request export, see parent component.
    */
   @Output() exportProperties = new EventEmitter();
 
   /**
-   * Emit for request launch
+   * Emit for request launch, see parent component.
    */
   @Output() launch = new EventEmitter();
 
   /**
-   * Emit for request copy
+   * Emit for request copy, see parent component.
    */
   @Output() copyProperties = new EventEmitter();
 
@@ -131,16 +132,16 @@ export class BuilderComponent implements OnInit, OnDestroy {
    * Builder observable
    * Contains the form and the input data
    */
-  // builder$: Observable<any>;
   builder$: Observable<Builder>;
 
   /**
-   * Builder Reference
+   * Internal builder reference populated during init when an actual
+   * builder is constructed asyncronously when observable is consumed.
    */
-  refBuilder;
+  private refBuilder: Builder;
 
   /**
-   * States
+   * States for UI to i.e. keep collap section state.
    */
   state: any = {
     platform: true,
@@ -151,13 +152,14 @@ export class BuilderComponent implements OnInit, OnDestroy {
     arguments: true
   };
 
-  constructor(private taskLaunchService: TaskLaunchService,
-              private changeDetector: ChangeDetectorRef,
-              private notificationService: NotificationService) {
+  constructor(
+    private taskLaunchService: TaskLaunchService,
+    private changeDetector: ChangeDetectorRef,
+    private notificationService: NotificationService) {
   }
 
   /**
-   * On Init
+   * Build needed structures what's needed after init.
    */
   ngOnInit() {
     this.builder$ = this.taskLaunchService
@@ -168,7 +170,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * On Destroy
+   * What's needed when this component goes bye bye.
    */
   ngOnDestroy() {
     if (this.refBuilder) {
@@ -177,8 +179,9 @@ export class BuilderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Return an array of properties
-   * @returns {Array<string>}
+   * Return what's known as current properties. This is a list of a raw array
+   * of properties what's "known" to a builder. Essentially as key/values
+   * separated by '='.
    */
   private getProperties(): Array<string> {
     const result: Array<string> = [];
@@ -615,6 +618,11 @@ export class BuilderComponent implements OnInit, OnDestroy {
       // ctrControls,
       ctrProperties,
 
+      arguments: {
+        global: [],
+        apps: {}
+      },
+
       errors: {
         global: [],
         app: []
@@ -839,12 +847,9 @@ export class BuilderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Open Application Properties modal
-   *
-   * @param builder
-   * @param app
+   * Open Task application properties modal.
    */
-  openApp(builder, app: any) {
+  openApp(builder: Builder, app: any) {
     const version = builder.formGroup.get('appsVersion').get(app.name).value || app.version;
     const options = builder.builderAppsProperties[app.name] ? builder.builderAppsProperties[app.name] : app.options;
     const appPropertiesSource = new AppPropertiesSource(Object.assign([], options
@@ -873,7 +878,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Emit a request deploy
+   * Emit properties to launch Output.
    */
   launchTask() {
     if (!this.isSubmittable(this.refBuilder)) {
@@ -884,17 +889,16 @@ export class BuilderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Emit a request export
+   * Emit properties to exportProperties Output.
    */
   exportProps() {
     this.exportProperties.emit(this.getProperties());
   }
 
   /**
-   * Copye to clipboard
+   * Emit properties to copyProperties Output.
    */
   copyToClipboard() {
     this.copyProperties.emit(this.getProperties());
   }
-
 }
