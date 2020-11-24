@@ -380,8 +380,7 @@
                     *ngIf="app.options && !app.optionsState.isLoading && !app.optionsState.isOnError && !app.optionsState.isInvalid"
                     class="form-control form-control-label">
                     <div *ngIf="app.options.length > 0">
-                      <!-- <strong>{{getAppProperties(builder.builderAppsProperties, app.name).length}}</strong> -->
-                      <strong>{{getAppProperties(builder.builderDeploymentProperties, app.name).length}}</strong>
+                      <strong>{{getAppProperties(builder.builderAppsProperties, app.name).length}}</strong>
                       <span> /</span> {{app.options.length}} properties
                       <button tabindex="{{101}}" type="button" (click)="openApp(builder, app)"
                               class="btn btn-sm btn-secondary">
