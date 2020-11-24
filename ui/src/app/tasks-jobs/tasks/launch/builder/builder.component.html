@@ -154,7 +154,7 @@
           </div>
 
           <!-- col 2 global -->
-          <div class="col-fixed global">
+          <div class="col-fixed global" *ngIf="task.composed">
 
             <!-- 0 -->
             <div class="line-head">
@@ -290,7 +290,24 @@
               <div class="line-toggle"></div>
 
               <!-- 2 -->
-              <div class="line-body" *ngIf="state.platform"></div>
+              <div class="line-body" *ngIf="state.platform && task.composed"></div>
+              <div class="line-body" *ngIf="state.platform && !task.composed"
+              [class.has-error]="isErrorPlatform(builder.taskLaunchConfig.platform.values, builder.formGroup.get('platform').value)">
+              <clr-select-container style="margin-top:0;">
+                <select tabindex="1" formControlName="platform" clrSelect>
+                  <option value="">Select a value</option>
+                  <option *ngFor="let platform of builder.taskLaunchConfig.platform.values" [value]="platform.key">
+                    {{platform.name}}
+                    ({{platform.type}})
+                  </option>
+                  <option
+                    *ngIf="isInvalidPlatform(builder.taskLaunchConfig.platform.values, builder.formGroup.get('platform').value)"
+                    [value]="builder.formGroup.get('platform').value">
+                    {{builder.formGroup.get('platform').value}} (invalid)
+                  </option>
+                </select>
+              </clr-select-container>
+            </div>
 
               <!-- 3 -->
               <div class="line-toggle"></div>
