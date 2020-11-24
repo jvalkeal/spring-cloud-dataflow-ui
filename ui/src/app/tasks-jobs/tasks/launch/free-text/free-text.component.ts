@@ -1,9 +1,8 @@
 import {
   ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { TaskLaunchValidator } from '../task-launch.validator';
-import { NotificationService } from '../../../../shared/service/notification.service';
 import { Task } from '../../../../shared/model/task.model';
 
 /**
@@ -61,7 +60,7 @@ export class FreeTextComponent implements OnInit, OnDestroy {
    * Constructor
    * Initialize FormGroup
    */
-  constructor(private notificationService: NotificationService) {
+  constructor() {
     this.formGroup = new FormGroup({
       ainput: new FormControl(),
       pinput: new FormControl(),
@@ -83,18 +82,6 @@ export class FreeTextComponent implements OnInit, OnDestroy {
       });
 
     this.formGroup.get('ainput').setValue(this.arguments.join('\n'));
-  }
-
-  private getCleanProperties(): string[] {
-    return (this.formGroup.get('pinput').value as string)
-      .split('\n')
-      .filter((line) => (line.replace(' ', '') !== ''));
-  }
-
-  private getCleanArguments(): string[] {
-    return (this.formGroup.get('ainput').value as string)
-      .split('\n')
-      .filter((line) => (line.replace(' ', '') !== ''));
   }
 
   /**
@@ -163,32 +150,16 @@ export class FreeTextComponent implements OnInit, OnDestroy {
    * Parse and load a file to the properties control
    * Produce an exception when the user cancel the file dialog
    */
-  propertiesFileChange(contents) {
-    try {
-      const reader = new FileReader();
-      reader.onloadend = (e) => {
-        this.formGroup.get('pinput').setValue(reader.result);
-        this.formGroup.get('file').setValue('');
-      };
-      reader.readAsText(contents.target.files[0]);
-    } catch (e) {
-    }
+  propertiesFileChange(event: Event) {
+    this.readFile(event, this.formGroup.get('pinput'), this.formGroup.get('pfile'));
   }
 
   /**
    * Parse and load a file to the arguments control
    * Produce an exception when the user cancel the file dialog
    */
-  argumentsFileChange(contents) {
-    try {
-      const reader = new FileReader();
-      reader.onloadend = (e) => {
-        this.formGroup.get('ainput').setValue(reader.result);
-        this.formGroup.get('file').setValue('');
-      };
-      reader.readAsText(contents.target.files[0]);
-    } catch (e) {
-    }
+  argumentsFileChange(event: Event) {
+    this.readFile(event, this.formGroup.get('ainput'), this.formGroup.get('afile'));
   }
 
   exportProps() {
@@ -209,5 +180,32 @@ export class FreeTextComponent implements OnInit, OnDestroy {
 
   launchTask() {
     this.launch.emit({props: this.getCleanProperties(), args: this.getCleanArguments()});
+  }
+
+  private getCleanProperties(): string[] {
+    return (this.formGroup.get('pinput').value as string)
+      .split('\n')
+      .filter((line) => (line.replace(' ', '') !== ''));
+  }
+
+  private getCleanArguments(): string[] {
+    return (this.formGroup.get('ainput').value as string)
+      .split('\n')
+      .filter((line) => (line.replace(' ', '') !== ''));
+  }
+
+  private readFile(event: Event, inputControl: AbstractControl, fileControl: AbstractControl) {
+    if ((event.target as HTMLInputElement).files && (event.target as HTMLInputElement).files.length) {
+      const file = (event.target as HTMLInputElement).files[0];
+      try {
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+          inputControl.setValue(reader.result);
+          fileControl.setValue('');
+        };
+        reader.readAsText(file);
+      } catch (e) {
+      }
+    }
   }
 }
