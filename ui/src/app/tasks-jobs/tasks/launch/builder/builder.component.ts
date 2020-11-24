@@ -66,6 +66,7 @@ export interface Builder {
   appsVersion: FormGroup;
   globalControls: FormArray;
   specificPlatformControls: FormArray;
+  argumentsControls: FormArray;
 
   builderDeploymentProperties: {
     global: any[];
@@ -598,12 +599,18 @@ export class BuilderComponent implements OnInit, OnDestroy {
       clean(val, specificPlatformControls);
     });
 
-    // const ctrControls: FormArray = new FormArray([]);
+    // Dynamic Arguments
+    const argumentsControls: FormArray = new FormArray([]);
+    add(argumentsControls);
+    argumentsControls.valueChanges.subscribe((val: Array<any>) => {
+      clean(val, argumentsControls);
+    });
 
     formGroup.addControl('deployers', deployers);
     formGroup.addControl('appsVersion', appsVersion);
     formGroup.addControl('global', globalControls);
     formGroup.addControl('specificPlatform', specificPlatformControls);
+    formGroup.addControl('argumentsControls', argumentsControls);
 
     return {
       formGroup,
@@ -615,6 +622,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
       appsVersion,
       globalControls,
       specificPlatformControls,
+      argumentsControls,
       // ctrControls,
       ctrProperties,
 
