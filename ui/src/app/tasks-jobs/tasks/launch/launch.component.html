@@ -16,11 +16,13 @@
     <clr-tab>
       <button clrTabLink id="link1">Builder</button>
       <clr-tab-content id="content1" *clrIfActive="true">
-        <app-task-launch-builder [properties]="properties"
-                                  [task]="task"
+        <app-task-launch-builder [task]="task"
+                                  [properties]="properties"
+                                  [arguments]="arguments"
                                   (exportProperties)="runPropertiesExport($event)"
                                   (copyProperties)="runPropertiesCopy($event)"
                                   (updateProperties)="updateProperties($event)"
+                                  (updateArguments)="updateArguments($event)"
                                   (launch)="runLaunch($event)">
         </app-task-launch-builder>
       </clr-tab-content>
@@ -28,8 +30,9 @@
     <clr-tab>
       <button clrTabLink>Freetext</button>
       <clr-tab-content *clrIfActive>
-        <app-task-launch-free-text [properties]="properties"
-                                    [task]="task"
+        <app-task-launch-free-text [task]="task"
+                                    [properties]="properties"
+                                    [arguments]="arguments"
                                     (exportProperties)="runPropertiesExport($event)"
                                     (exportArguments)="runArgumentsExport($event)"
                                     (copyProperties)="runPropertiesCopy($event)"

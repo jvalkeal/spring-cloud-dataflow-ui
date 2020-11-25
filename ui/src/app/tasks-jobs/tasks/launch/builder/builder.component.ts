@@ -82,7 +82,7 @@ export interface Builder {
   };
 
   errors: {
-    global: [],
+    global: string[],
     app: []
   };
 }
@@ -101,7 +101,9 @@ export class BuilderComponent implements OnInit, OnDestroy {
 
   @Input() task: Task;
   @Input() properties: Array<string> = [];
+  @Input() arguments: Array<string> = [];
   @Output() updateProperties = new EventEmitter();
+  @Output() updateArguments = new EventEmitter();
   @Output() exportProperties = new EventEmitter();
   @Output() launch = new EventEmitter();
   @Output() copyProperties = new EventEmitter();
@@ -140,11 +142,10 @@ export class BuilderComponent implements OnInit, OnDestroy {
    * Build needed structures what's needed after init.
    */
   ngOnInit() {
-    this.builder$ = this.taskLaunchService
-      .config(this.task.name)
-      .pipe(map((taskLaunchConfig) => this.build(taskLaunchConfig)))
-      .pipe(map((builder) => this.populate(builder)))
-      .pipe(map((builder) => this.populateApp(builder)));
+    this.builder$ = this.taskLaunchService.config(this.task.name)
+      .pipe(map(taskLaunchConfig => this.build(taskLaunchConfig)))
+      .pipe(map(builder => this.populate(builder)))
+      .pipe(map(builder => this.populateApp(builder)));
   }
 
   /**
@@ -153,6 +154,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.refBuilder) {
       this.updateProperties.emit(this.getProperties());
+      this.updateArguments.emit(this.getArguments());
     }
   }
 
@@ -238,6 +240,28 @@ export class BuilderComponent implements OnInit, OnDestroy {
     return result;
   }
 
+  private getArguments(): Array<string> {
+    const isEmpty = (control: AbstractControl) => !control || (control.value === '' || control.value === null);
+    const result: Array<string> = [];
+    (this.refBuilder.argumentsControls.controls as FormGroup[]).forEach((g, i) => {
+      for (const field in g.controls) {
+        // hasOwnProperty for lint error
+        if (g.controls.hasOwnProperty(field)) {
+          const control = g.get(field);
+          if (!isEmpty(control)) {
+            if (field === 'global') {
+              result.push(`app.${this.task.name}.*=${control.value}`);
+            } else if (field === 'property') {
+            } else {
+              result.push(`app.${this.task.name}.${field}=${control.value}`);
+            }
+          }
+        }
+      }
+    });
+    return result;
+  }
+
   private updateFormArray(builder, array: FormArray, appKey: string, key: string, value) {
     let group: FormGroup;
     const lines = array.controls
@@ -319,13 +343,64 @@ export class BuilderComponent implements OnInit, OnDestroy {
       }
     });
     add(builder.formGroup.get('global'));
+
+
+    console.log('XXX1', this.arguments);
+    const xxx = builder.formGroup.get('argumentsControls') as FormArray;
+    console.log('XXX2', xxx);
+
+    this.arguments.forEach((line: string) => {
+      // app.ctr1.t1=--timestamp.format=yyyyMM
+      // app.ctr1.*=--timestamp.format=yyyyMM
+      // --timestamp.format=yyyyMM
+      const arr = line.split(/=(.*)/);
+      const key = arr[0] as string;
+      const value = arr[1] as string;
+      const ctrKey = key.split('.')[1];
+      const appKey = key.split('.')[2];
+
+      // (xxx.controls[0] as FormGroup).get('global');
+      this.updateArgumentsFormArray(builder, xxx, appKey, ctrKey, value);
+    });
+
+    // if (this.arguments.length === 1) {
+    //   const g = (xxx.controls[0] as FormGroup);
+    //   g.get('global').setValue(this.arguments[0]);
+    //   console.log('XXX3', g.get('global'));
+    // }
+
+    console.log('XXX4', builder);
+
+
     return builder;
+  }
+
+  private updateArgumentsFormArray(builder: Builder, array: FormArray, appKey: string, ctrKey: string, value: string) {
+    let group: FormGroup;
+    const lines = array.controls;
+      // .filter((formGroup: FormGroup) => key === formGroup.get('property').value);
+
+    if (lines.length > 0) {
+      group = lines[0] as FormGroup;
+    } else {
+      group = new FormGroup({
+        property: new FormControl('', [TaskLaunchValidator.key]),
+        global: new FormControl('')
+      }, { validators: TaskLaunchValidator.keyRequired });
+      builder.taskLaunchConfig.apps.forEach((app) => {
+        group.addControl(app.name, new FormControl(''));
+      });
+      array.push(group);
+    }
+    // group.get('property').setValue(key);
+    group.get(appKey === '*' ? 'global' : appKey).setValue(value);
+    group.get('global').setValue(value);
   }
 
   /**
    * Populate values
    */
-  private populate(builder) {
+  private populate(builder: Builder): Builder {
     this.refBuilder = builder;
 
     const appNames: Array<string> = builder.taskLaunchConfig.apps.map(app => app.name);
@@ -375,7 +450,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
           builder.errors.global.push(line);
         } else {
           if (deployerKeys.indexOf(keyReduce) > -1) {
-            builder.formGroup.get('deployers')
+            (builder.formGroup.get('deployers') as FormArray)
               .controls[deployerKeys.indexOf(keyReduce)]
               .get(appKey === '*' ? 'global' : appKey).setValue(value);
           } else {
