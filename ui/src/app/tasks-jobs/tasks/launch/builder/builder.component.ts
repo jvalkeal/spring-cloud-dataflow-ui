@@ -229,13 +229,21 @@ export class BuilderComponent implements OnInit, OnDestroy {
       result.push(`deployer.*.${keyValue.key.replace(/spring.cloud.deployer./, '')}=${keyValue.value}`);
     });
 
+    // Ctr Properties
+    this.refBuilder.ctrProperties.forEach(x => {
+      if (x.value !== null && x.value !== undefined && x.value !== '' && x.value !== x.defaultValue) {
+        result.push(`app.composed-task-runner.${x.id}=${x.value}`);
+      }
+    });
+
     // Errors
     this.refBuilder.errors.global.forEach((error) => {
       result.push(error);
     });
-    this.refBuilder.errors.app.forEach((error) => {
-      result.push(error);
-    });
+    // TODO: causing push to app.composed-task-runner
+    // this.refBuilder.errors.app.forEach((error) => {
+    //   result.push(error);
+    // });
 
     return result;
   }
@@ -344,11 +352,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
     });
     add(builder.formGroup.get('global'));
 
-
-    console.log('XXX1', this.arguments);
-    const xxx = builder.formGroup.get('argumentsControls') as FormArray;
-    console.log('XXX2', xxx);
-
+    const argumentsControls = builder.formGroup.get('argumentsControls') as FormArray;
     this.arguments.forEach((line: string) => {
       // app.ctr1.t1=--timestamp.format=yyyyMM
       // app.ctr1.*=--timestamp.format=yyyyMM
@@ -358,19 +362,8 @@ export class BuilderComponent implements OnInit, OnDestroy {
       const value = arr[1] as string;
       const ctrKey = key.split('.')[1];
       const appKey = key.split('.')[2];
-
-      // (xxx.controls[0] as FormGroup).get('global');
-      this.updateArgumentsFormArray(builder, xxx, appKey, ctrKey, value);
+      this.updateArgumentsFormArray(builder, argumentsControls, appKey, ctrKey, value);
     });
-
-    // if (this.arguments.length === 1) {
-    //   const g = (xxx.controls[0] as FormGroup);
-    //   g.get('global').setValue(this.arguments[0]);
-    //   console.log('XXX3', g.get('global'));
-    // }
-
-    console.log('XXX4', builder);
-
 
     return builder;
   }
@@ -493,6 +486,13 @@ export class BuilderComponent implements OnInit, OnDestroy {
             builder.formGroup.get('appsVersion').get(appKey).setValue(value);
           }
         }
+      } else if (TaskLaunchService.ctr.is(key)) {
+        const ctrKey = TaskLaunchService.ctr.extract(key);
+        builder.ctrProperties.forEach(p => {
+          if (p.id === ctrKey) {
+            p.value = value;
+          }
+        });
       } else if (!TaskLaunchService.app.is(key)) {
         // Invalid Key
         builder.errors.global.push(line);

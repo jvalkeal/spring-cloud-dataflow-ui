@@ -69,6 +69,19 @@ export class TaskLaunchService {
     }
   };
 
+  public static ctr = {
+    is: (key: string): boolean => {
+      return /^(app\.composed-task-runner\.)/.test(key);
+    },
+    extract: (key: string): string => {
+      const result = key.split('.');
+      if (result.length === 3) {
+        return result[2];
+      }
+      return '';
+    }
+  };
+
   constructor(
     private taskService: TaskService,
     private appService: AppService,
