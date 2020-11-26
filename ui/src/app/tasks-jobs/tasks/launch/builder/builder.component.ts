@@ -145,7 +145,9 @@ export class BuilderComponent implements OnInit, OnDestroy {
     this.builder$ = this.taskLaunchService.config(this.task.name)
       .pipe(map(taskLaunchConfig => this.build(taskLaunchConfig)))
       .pipe(map(builder => this.populate(builder)))
-      .pipe(map(builder => this.populateApp(builder)));
+      .pipe(map(builder => this.populateApp(builder)))
+      .pipe(map(builder => this.populateAppArgs(builder)))
+      ;
   }
 
   /**
@@ -352,19 +354,47 @@ export class BuilderComponent implements OnInit, OnDestroy {
     });
     add(builder.formGroup.get('global'));
 
+    return builder;
+  }
+
+  private populateAppArgs(builder?: any) {
     const argumentsControls = builder.formGroup.get('argumentsControls') as FormArray;
-    this.arguments.forEach((line: string) => {
-      // app.ctr1.t1=--timestamp.format=yyyyMM
-      // app.ctr1.*=--timestamp.format=yyyyMM
-      // --timestamp.format=yyyyMM
+
+    let maxRows = 0;
+    const argsMap = this.arguments.reduce((m, line) => {
       const arr = line.split(/=(.*)/);
       const key = arr[0] as string;
       const value = arr[1] as string;
       const ctrKey = key.split('.')[1];
       const appKey = key.split('.')[2];
-      this.updateArgumentsFormArray(builder, argumentsControls, appKey, ctrKey, value);
-    });
+      if (m.has(appKey)) {
+        m.set(appKey, [...m.get(appKey), line]);
+        maxRows = Math.max(maxRows, m.get(appKey).length);
+      } else {
+        m.set(appKey, [line]);
+        maxRows = Math.max(maxRows, 1);
+      }
+      return m;
+    }, new Map<string, string[]>());
 
+    for (let index = 0; index < maxRows; index++) {
+      const gControl = new FormControl('');
+      if (argsMap.has('*') && argsMap.get('*').length > index) {
+        gControl.setValue(TaskLaunchService.ctr.value(argsMap.get('*')[index]));
+      }
+      const group = new FormGroup({
+        property: new FormControl('', [TaskLaunchValidator.key]),
+        global: gControl
+      }, { validators: TaskLaunchValidator.keyRequired });
+      builder.taskLaunchConfig.apps.forEach((app) => {
+        const aControl = new FormControl('');
+        if (argsMap.has(app.name) && argsMap.get(app.name).length > index) {
+          aControl.setValue(TaskLaunchService.ctr.value(argsMap.get(app.name)[index]));
+        }
+        group.addControl(app.name, aControl);
+      });
+      argumentsControls.push(group);
+    }
     return builder;
   }
 

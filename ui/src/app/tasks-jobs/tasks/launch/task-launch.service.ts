@@ -79,6 +79,9 @@ export class TaskLaunchService {
         return result[2];
       }
       return '';
+    },
+    value: (line: string): string => {
+      return line.slice(line.indexOf('=') + 1);
     }
   };
 
