@@ -83,7 +83,7 @@ export interface Builder {
 
   errors: {
     global: string[],
-    app: []
+    app: string[]
   };
 }
 
@@ -296,12 +296,8 @@ export class BuilderComponent implements OnInit, OnDestroy {
   /**
    * Populate values app
    */
-  private populateApp(builder?: any) {
-    builder = builder || this.refBuilder;
-    if (!builder) {
-      return false;
-    }
-    builder.formGroup.get('global').controls = [];
+  private populateApp(builder: Builder): Builder {
+    builder.globalControls.controls = [];
     builder.errors.app = [];
     const appNames: Array<string> = builder.taskLaunchConfig.apps.map((app, index) => {
       const appInfo = builder.taskLaunchConfig.apps[index];
@@ -352,12 +348,11 @@ export class BuilderComponent implements OnInit, OnDestroy {
         }
       }
     });
-    add(builder.formGroup.get('global'));
-
+    add(builder.globalControls);
     return builder;
   }
 
-  private populateAppArgs(builder?: any) {
+  private populateAppArgs(builder: Builder): Builder {
     const argumentsControls = builder.formGroup.get('argumentsControls') as FormArray;
 
     let maxRows = 0;
@@ -396,28 +391,6 @@ export class BuilderComponent implements OnInit, OnDestroy {
       argumentsControls.push(group);
     }
     return builder;
-  }
-
-  private updateArgumentsFormArray(builder: Builder, array: FormArray, appKey: string, ctrKey: string, value: string) {
-    let group: FormGroup;
-    const lines = array.controls;
-      // .filter((formGroup: FormGroup) => key === formGroup.get('property').value);
-
-    if (lines.length > 0) {
-      group = lines[0] as FormGroup;
-    } else {
-      group = new FormGroup({
-        property: new FormControl('', [TaskLaunchValidator.key]),
-        global: new FormControl('')
-      }, { validators: TaskLaunchValidator.keyRequired });
-      builder.taskLaunchConfig.apps.forEach((app) => {
-        group.addControl(app.name, new FormControl(''));
-      });
-      array.push(group);
-    }
-    // group.get('property').setValue(key);
-    group.get(appKey === '*' ? 'global' : appKey).setValue(value);
-    group.get('global').setValue(value);
   }
 
   /**
@@ -634,7 +607,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
           }, () => {
             app.optionsState.isLoading = false;
             this.changeDetector.markForCheck();
-            this.populateApp();
+            this.populateApp(this.refBuilder);
           });
         }
       });
@@ -705,7 +678,6 @@ export class BuilderComponent implements OnInit, OnDestroy {
       globalControls,
       specificPlatformControls,
       argumentsControls,
-      // ctrControls,
       ctrProperties,
 
       arguments: {
