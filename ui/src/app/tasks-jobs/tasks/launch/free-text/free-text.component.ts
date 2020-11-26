@@ -114,8 +114,6 @@ export class FreeTextComponent implements OnInit, OnDestroy {
           message: (message !== true) ? message : ''
         };
       });
-
-    // this.isLaunchable = (countInvalidProperties === 0);
     this.isPropertiesExportable = (countInvalidProperties + countValidProperties) > 0;
   }
 
@@ -141,8 +139,6 @@ export class FreeTextComponent implements OnInit, OnDestroy {
           message: (message !== true) ? message : ''
         };
       });
-
-    // this.isLaunchable = (countInvalidProperties === 0);
     this.isArgumentsExportable = (countInvalidArguments + countValidArguments) > 0;
   }
 
