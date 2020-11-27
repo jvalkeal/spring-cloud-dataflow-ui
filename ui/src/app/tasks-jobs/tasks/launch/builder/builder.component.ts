@@ -954,18 +954,4 @@ export class BuilderComponent implements OnInit, OnDestroy {
       this.launch.emit(this.getProperties());
     }
   }
-
-  /**
-   * Emit properties to exportProperties Output.
-   */
-  exportProps() {
-    this.exportProperties.emit(this.getProperties());
-  }
-
-  /**
-   * Emit properties to copyProperties Output.
-   */
-  copyToClipboard() {
-    this.copyProperties.emit(this.getProperties());
-  }
 }

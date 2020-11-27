@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { forkJoin, Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Task, TaskPage } from '../model/task.model';
-import { forkJoin, Observable, of } from 'rxjs';
 import { HttpUtils } from '../support/http.utils';
-import { catchError, delay, map } from 'rxjs/operators';
 import { TaskExecution, TaskExecutionPage } from '../model/task-execution.model';
 import { Platform, PlatformTaskList } from '../model/platform.model';
 import { ErrorUtils } from '../support/error.utils';
@@ -158,13 +158,6 @@ export class TaskService {
   }
 
   getPlatforms(): Observable<Platform[]> {
-    // return of([
-    //   Platform.parse({ name: 'foo', type: 'foo' }),
-    //   Platform.parse({ name: 'bar', type: 'bar' }),
-    // ])
-    //   .pipe(
-    //     delay(1000),
-    //   );
     const headers = HttpUtils.getDefaultHttpHeaders();
     const params = HttpUtils.getPaginationParams(0, 1000);
     return this.httpClient
@@ -184,13 +177,4 @@ export class TaskService {
         catchError(ErrorUtils.catchError)
       );
   }
-  // getCtrOptions(): Observable<ConfigurationMetadataProperty[]> {
-  //   const headers = HttpUtils.getDefaultHttpHeaders();
-  //   const url = `/tasks/ctr/options`;
-  //   return this.httpClient.get<any>(url, { headers })
-  //     .pipe(
-  //       map(ConfigurationMetadataPropertyList.parse),
-  //       catchError(ErrorUtils.catchError)
-  //     );
-  // }
 }
