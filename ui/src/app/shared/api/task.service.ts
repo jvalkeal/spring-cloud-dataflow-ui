@@ -8,7 +8,7 @@ import { TaskExecution, TaskExecutionPage } from '../model/task-execution.model'
 import { Platform, PlatformTaskList } from '../model/platform.model';
 import { ErrorUtils } from '../support/error.utils';
 import { DataflowEncoder } from '../support/encoder.utils';
-import { ConfigurationMetadataProperty, ConfigurationMetadataPropertyList } from '../model/detailed-app.model';
+import { ValuedConfigurationMetadataProperty, ValuedConfigurationMetadataPropertyList } from '../model/detailed-app.model';
 
 @Injectable({
   providedIn: 'root'
@@ -175,13 +175,22 @@ export class TaskService {
       );
   }
 
-  getCtrOptions(): Observable<ConfigurationMetadataProperty[]> {
+  getCtrOptions(): Observable<ValuedConfigurationMetadataProperty[]> {
     const headers = HttpUtils.getDefaultHttpHeaders();
     const url = `/tasks/ctr/options`;
     return this.httpClient.get<any>(url, { headers })
       .pipe(
-        map(ConfigurationMetadataPropertyList.parse),
+        map(ValuedConfigurationMetadataPropertyList.parse),
         catchError(ErrorUtils.catchError)
       );
   }
+  // getCtrOptions(): Observable<ConfigurationMetadataProperty[]> {
+  //   const headers = HttpUtils.getDefaultHttpHeaders();
+  //   const url = `/tasks/ctr/options`;
+  //   return this.httpClient.get<any>(url, { headers })
+  //     .pipe(
+  //       map(ConfigurationMetadataPropertyList.parse),
+  //       catchError(ErrorUtils.catchError)
+  //     );
+  // }
 }

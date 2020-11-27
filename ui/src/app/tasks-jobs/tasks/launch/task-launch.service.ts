@@ -138,12 +138,6 @@ export class TaskLaunchService {
         const c = new TaskLaunchConfig();
         c.id = id;
 
-        // console.log('XXX1', task);
-        // console.log('XXX2', taskConversion);
-        // console.log('XXX3', platforms);
-        // console.log('XXX4', appVersions);
-        // console.log('XXX5', ctrOptions);
-
         c.apps = taskConversion.graph.nodes
           .filter(node => node.name !== 'START' && node.name !== 'END')
           .map(node => {
@@ -211,8 +205,7 @@ export class TaskLaunchService {
         };
         c.ctr = ctrOptions;
         return c;
-      }))
-      ;
+      }));
   }
 
   appDetails(type: ApplicationType, name: string, version: string): Observable<Array<any>> {
@@ -264,5 +257,4 @@ export class TaskLaunchService {
           });
       }));
   }
-
 }

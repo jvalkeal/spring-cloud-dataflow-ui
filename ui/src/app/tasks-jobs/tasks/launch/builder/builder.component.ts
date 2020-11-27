@@ -18,6 +18,7 @@ import { App } from '../../../../shared/model/app.model';
 import { PropertiesDialogComponent } from '../../../../flo/shared/properties/properties-dialog.component';
 import { StreamAppPropertiesSource, StreamHead } from '../../../../flo/stream/properties/stream-properties-source';
 import { TaskPropertiesDialogComponent } from '../../../../flo/task/properties/task-properties-dialog-component';
+import { ValuedConfigurationMetadataProperty } from '../../../../shared/model/detailed-app.model';
 
 export class AppPropertiesSource implements StreamAppPropertiesSource {
   private options: Array<any>;
@@ -76,7 +77,7 @@ export interface Builder {
     apps: {};
   };
 
-  ctrProperties: any[];
+  ctrProperties: ValuedConfigurationMetadataProperty[];
 
   // args for global and task apps
   arguments: {
@@ -516,7 +517,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
     const getValue = (defaultValue) => !defaultValue ? '' : defaultValue;
     const builderAppsProperties = {};
     const builderDeploymentProperties = { global: [], apps: {} };
-    const ctrProperties = [];
+    const ctrProperties: ValuedConfigurationMetadataProperty[] = [];
 
     // Platform
     const platformControl = new FormControl(getValue(taskLaunchConfig.platform.defaultValue),

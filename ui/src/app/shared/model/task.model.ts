@@ -1,3 +1,4 @@
+import { ValuedConfigurationMetadataProperty } from './detailed-app.model';
 import { Page } from './page.model';
 import { TaskExecution } from './task-execution.model';
 
@@ -50,11 +51,15 @@ export class TaskPage extends Page<Task> {
 }
 
 export class TaskLaunchConfig {
+
+  /** Task name */
   id: string;
   platform: any;
   deployers: any;
   apps: any;
-  ctr: any;
+
+  /** Ctr options metadata */
+  ctr: ValuedConfigurationMetadataProperty[];
 
   constructor() {
   }
