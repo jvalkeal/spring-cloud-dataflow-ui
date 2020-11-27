@@ -7,7 +7,7 @@ import { Task } from '../../../../shared/model/task.model';
 
 /**
  * Free Text Component
- * Provides a rich textarea with a semantic validation of the properties and the arguments.
+ * Provides a rich textareas with a semantic validation of the properties and the arguments.
  *
  * @author Damien Vitrac
  * @author Janne Valkealahti
