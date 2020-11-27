@@ -1,4 +1,4 @@
-import { ValuedConfigurationMetadataProperty } from './detailed-app.model';
+import { ConfigurationMetadataProperty, ValuedConfigurationMetadataProperty } from './detailed-app.model';
 import { Page } from './page.model';
 import { TaskExecution } from './task-execution.model';
 
@@ -54,9 +54,47 @@ export class TaskLaunchConfig {
 
   /** Task name */
   id: string;
-  platform: any;
-  deployers: any;
-  apps: any;
+
+  /** Expected platform type */
+  platform: {
+    id: string;
+    name: string;
+    form: string;
+    type: string;
+    defaultValue: string|null;
+    values: {
+      key: string;
+      name: string;
+      type: string;
+      options: ConfigurationMetadataProperty[];
+    }[];
+  };
+
+  /** Expected deployer type */
+  deployers: {
+    id: string;
+    name: string;
+    form: string;
+    type: string;
+    value: string|null;
+    defaultValue: string|null;
+    suffix: string;
+  }[];
+
+  /** Expected apps type */
+  apps: {
+    origin: string;
+    name: string;
+    type: string;
+    version: string;
+    versions: string[];
+    options: ConfigurationMetadataProperty[];
+    optionsState: {
+      isLoading: boolean;
+      isOnError: boolean;
+      isInvalid: boolean;
+    };
+  }[];
 
   /** Ctr options metadata */
   ctr: ValuedConfigurationMetadataProperty[];
