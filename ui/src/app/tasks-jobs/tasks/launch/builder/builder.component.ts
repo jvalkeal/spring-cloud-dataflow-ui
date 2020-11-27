@@ -62,6 +62,9 @@ export interface Builder {
   formGroup: FormGroup;
   builderAppsProperties: any;
 
+  // additional arrays and groups exposed directly so that we
+  // get proper typing in a template as getting these from a
+  // formGroup would return AbstractControl
   deployers: FormArray;
   appsVersion: FormGroup;
   globalControls: FormArray;
@@ -678,6 +681,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
       globalControls,
       specificPlatformControls,
       argumentsControls,
+
       ctrProperties,
 
       arguments: {
