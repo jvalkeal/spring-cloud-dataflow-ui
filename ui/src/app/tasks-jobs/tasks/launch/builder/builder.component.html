@@ -7,11 +7,11 @@
           <!-- col 1 line info -->
           <div class="col-fixed col-key">
 
-            <!-- 0 -->
+            <!-- 0 Empty header -->
             <div class="line-head">
             </div>
 
-            <!-- 1 -->
+            <!-- 1 Platform header -->
             <div class="line-toggle">
               <a class="toggle" (click)="state.platform = !state.platform">
                 <clr-icon shape="angle" [class.active]="state.platform"></clr-icon>
@@ -19,7 +19,7 @@
               </a>
             </div>
 
-            <!-- 2 -->
+            <!-- 2 Platform selector -->
             <div class="line-body" *ngIf="state.platform">
               <div class="status" *ngIf="builder.formGroup.get('platform').invalid">
               </div>
@@ -28,7 +28,7 @@
               </div>
             </div>
 
-            <!-- 3 -->
+            <!-- 3 Generic Deployer Properties header -->
             <div class="line-toggle">
               <a class="toggle" (click)="state.deployer = !state.deployer">
                 <clr-icon shape="angle" [class.active]="state.deployer"></clr-icon>
@@ -36,7 +36,7 @@
               </a>
             </div>
 
-            <!-- 4 -->
+            <!-- 4 Generic Deployer Properties options -->
             <div *ngIf="state.deployer">
               <div class="line-body" *ngFor="let deployer of builder.taskLaunchConfig.deployers;let i = index">
 
@@ -49,7 +49,7 @@
               </div>
             </div>
 
-            <!-- 5 -->
+            <!-- 5 Deployment Platform -->
             <div class="line-toggle">
               <div class="help">
               </div>
@@ -61,7 +61,7 @@
               </a>
             </div>
 
-            <!-- 6 -->
+            <!-- 6 Deployment Platform options -->
             <div *ngIf="state.specificPlatform">
               <div *ngIf="builder.builderDeploymentProperties.global.length > 0"
                    class="line-body">
@@ -83,7 +83,7 @@
               </div>
             </div>
 
-            <!-- 7 -->
+            <!-- 7 Applications Properties -->
             <div class="line-toggle">
               <a class="toggle" (click)="state.app = !state.app">
                 <clr-icon shape="angle" [class.active]="state.app"></clr-icon>
@@ -91,7 +91,7 @@
               </a>
             </div>
 
-            <!-- 8 -->
+            <!-- 8 Applications Properties options -->
             <div *ngIf="state.app">
               <div class="line-body">
 
@@ -121,7 +121,7 @@
               </div>
             </div>
 
-            <!-- 9 -->
+            <!-- 9 Ctr Properties -->
             <div class="line-toggle" *ngIf="task.composed && builder.ctrProperties.length > 0">
               <a class="toggle" (click)="state.ctr = !state.ctr">
                 <clr-icon shape="angle" [class.active]="state.ctr"></clr-icon>
@@ -129,16 +129,14 @@
               </a>
             </div>
 
-            <!-- 10 -->
+            <!-- 10 Ctr Properties options -->
             <div class="line-body" *ngIf="state.ctr && task.composed && builder.ctrProperties.length > 0">
-              <!-- <div class="status" *ngIf="builder.formGroup.get('platform').invalid">
-              </div> -->
               <div class="form-control form-control-label">
                 Properties
               </div>
             </div>
 
-            <!-- 11 -->
+            <!-- 11 Ctr Arguments -->
             <div class="line-toggle">
               <a class="toggle" (click)="state.arguments = !state.arguments">
                 <clr-icon shape="angle" [class.active]="state.arguments"></clr-icon>
@@ -146,7 +144,7 @@
               </a>
             </div>
 
-            <!-- 12 -->
+            <!-- 12 Arguments options -->
             <div *ngIf="state.arguments">
               <div class="line-body">
               </div>
@@ -156,15 +154,15 @@
           <!-- col 2 global -->
           <div class="col-fixed global" *ngIf="task.composed">
 
-            <!-- 0 -->
+            <!-- 0 Global header -->
             <div class="line-head">
               Global
             </div>
 
-            <!-- 1 -->
+            <!-- 1 Platform header -->
             <div class="line-toggle"></div>
 
-            <!-- 2 -->
+            <!-- 2 Platform selector -->
             <div class="line-body" *ngIf="state.platform"
               [class.has-error]="isErrorPlatform(builder.taskLaunchConfig.platform.values, builder.formGroup.get('platform').value)">
               <clr-select-container style="margin-top:0;">
@@ -183,14 +181,11 @@
               </clr-select-container>
             </div>
 
-            <!-- 3 -->
+            <!-- 3 Generic Deployer Properties header -->
             <div class="line-toggle"></div>
 
-            <!-- 4 -->
+            <!-- 4 Generic Deployer Properties options -->
             <div formArrayName="deployers" *ngIf="state.deployer">
-              <!-- <div [formGroupName]="i" class="line-body"
-                   *ngFor="let deployer of builder.taskLaunchConfig.deployers; let i = index"
-                   [class.has-error]="builder.formGroup.get('deployers').controls[i].get('global').invalid"> -->
               <div [formGroupName]="i" class="line-body"
                    *ngFor="let deployer of builder.taskLaunchConfig.deployers; let i = index"
                    [class.has-error]="builder.deployers.controls[i].get('global').invalid">
@@ -201,7 +196,7 @@
               </div>
             </div>
 
-            <!-- 5 -->
+            <!-- 5 Deployment Platform -->
             <div class="line-toggle"></div>
 
             <div class="line-body"
@@ -216,7 +211,7 @@
               </div>
             </div>
 
-            <!-- 6 -->
+            <!-- 6 Deployment Platform options -->
             <div *ngIf="state.specificPlatform"
                  formArrayName="specificPlatform">
               <div class="line-body" *ngFor="let f of builder.specificPlatformControls.controls;let i = index"
@@ -227,10 +222,10 @@
               </div>
             </div>
 
-            <!-- 7 -->
+            <!-- 7 Applications Properties -->
             <div class="line-toggle"></div>
 
-            <!-- 8 -->
+            <!-- 8 Applications Properties options -->
             <div *ngIf="state.app">
               <div class="line-body"></div>
               <div class="line-body"></div>
@@ -244,10 +239,10 @@
               </div>
             </div>
 
-            <!-- 9 -->
+            <!-- 9 Ctr Properties -->
             <div class="line-toggle" *ngIf="task.composed && builder.ctrProperties.length > 0"></div>
 
-            <!-- 10 -->
+            <!-- 10 Ctr Properties options -->
             <div class="line-body"
                  *ngIf="state.ctr && task.composed && builder.ctrProperties.length > 0">
               <div class="form-control form-control-label">
@@ -260,10 +255,10 @@
               </div>
             </div>
 
-            <!-- 11 -->
+            <!-- 11 Ctr Arguments -->
             <div class="line-toggle"></div>
 
-            <!-- 12 -->
+            <!-- 12 Arguments options -->
             <div *ngIf="state.arguments" formArrayName="argumentsControls">
               <div class="line-body" *ngFor="let f of builder.argumentsControls.controls;let i = index"
                    [formGroupName]="i"
@@ -279,17 +274,17 @@
 
             <div class="col" *ngFor="let app of builder.taskLaunchConfig.apps">
 
-              <!-- 0 -->
+              <!-- 0 Apps header -->
               <div class="line-head">
                 <strong>{{app.name}}</strong>
                 <br/>
                 <span class="label label-app {{app.type}}">{{app.origin}}</span>
               </div>
 
-              <!-- 1 -->
+              <!-- 1 Platform header -->
               <div class="line-toggle"></div>
 
-              <!-- 2 -->
+              <!-- 2 Platform selector-->
               <div class="line-body" *ngIf="state.platform && task.composed"></div>
               <div class="line-body" *ngIf="state.platform && !task.composed"
               [class.has-error]="isErrorPlatform(builder.taskLaunchConfig.platform.values, builder.formGroup.get('platform').value)">
@@ -309,10 +304,10 @@
               </clr-select-container>
             </div>
 
-              <!-- 3 -->
+              <!-- 3 Generic Deployer Properties header -->
               <div class="line-toggle"></div>
 
-              <!-- 4 -->
+              <!-- 4 Generic Deployer Properties options -->
               <div formArrayName="deployers" *ngIf="state.deployer">
                 <div [formGroupName]="i" class="line-body"
                      *ngFor="let deployer of builder.taskLaunchConfig.deployers; let i = index"
@@ -324,10 +319,10 @@
                 </div>
               </div>
 
-              <!-- 5 -->
+              <!-- 5 Deployment Platform -->
               <div class="line-toggle"></div>
 
-              <!-- 6 -->
+              <!-- 6 Deployment Platform options -->
               <!-- track visibility from global as those are same as per apps -->
               <div class="line-body"
                    *ngIf="state.specificPlatform && builder.builderDeploymentProperties.global.length > 0">
@@ -352,10 +347,10 @@
                 </div>
               </div>
 
-              <!-- 7 -->
+              <!-- 7 Applications Properties -->
               <div class="line-toggle"></div>
 
-              <!-- 8 -->
+              <!-- 8 Applications Properties options -->
               <div *ngIf="state.app">
                 <div class="line-body" [class.has-error]="app.optionsState.isInvalid">
                   <div formGroupName="appsVersion">
@@ -411,16 +406,16 @@
                 </div>
               </div>
 
-              <!-- 9 -->
+              <!-- 9 Ctr Properties -->
               <div class="line-toggle" *ngIf="task.composed && builder.ctrProperties.length > 0"></div>
 
-              <!-- 10 -->
+              <!-- 10 Ctr Properties options -->
               <div class="line-body" *ngIf="state.ctr && task.composed && builder.ctrProperties.length > 0"></div>
 
-              <!-- 11 -->
+              <!-- 11 Ctr Arguments -->
               <div class="line-toggle"></div>
 
-              <!-- 12 -->
+              <!-- 12 Arguments options -->
               <div *ngIf="state.arguments">
                 <div formArrayName="argumentsControls">
                   <div class="line-body" *ngFor="let f of builder.argumentsControls.controls;let i = index"
