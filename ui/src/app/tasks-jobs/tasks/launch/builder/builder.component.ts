@@ -263,10 +263,10 @@ export class BuilderComponent implements OnInit, OnDestroy {
           const control = g.get(field);
           if (!isEmpty(control)) {
             if (field === 'global') {
-              result.push(`app.${this.task.name}.*=${control.value}`);
+              result.push(`app.*=${control.value}`);
             } else if (field === 'property') {
             } else {
-              result.push(`app.${this.task.name}.${field}=${control.value}`);
+              result.push(`app.${field}=${control.value}`);
             }
           }
         }
@@ -362,9 +362,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
     const argsMap = this.arguments.reduce((m, line) => {
       const arr = line.split(/=(.*)/);
       const key = arr[0] as string;
-      const value = arr[1] as string;
-      const ctrKey = key.split('.')[1];
-      const appKey = key.split('.')[2];
+      const appKey = key.split('.')[1];
       if (m.has(appKey)) {
         m.set(appKey, [...m.get(appKey), line]);
         maxRows = Math.max(maxRows, m.get(appKey).length);
