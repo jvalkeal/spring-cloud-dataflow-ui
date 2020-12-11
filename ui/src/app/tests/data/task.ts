@@ -290,10 +290,13 @@ export const CTR_OPTIONS = [{
   'name': 'oauth2-client-credentials-scopes',
   'type': 'java.util.Set<java.lang.String>',
   'description': 'OAuth2 Authorization scopes (Used for the client credentials grant).',
-  'shortDescription':'OAuth2 Authorization scopes (Used for the client credentials grant).',
+  'shortDescription': 'OAuth2 Authorization scopes (Used for the client credentials grant).',
   'defaultValue': null,
   'hints': {
-    'keyHints': [],'keyProviders':[],'valueHints':[],'valueProviders':[]
+    'keyHints': [],
+    'keyProviders': [],
+    'valueHints': [],
+    'valueProviders': []
   },
   'deprecation': null,
   'deprecated': false
