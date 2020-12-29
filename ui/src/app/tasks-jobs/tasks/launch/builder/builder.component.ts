@@ -379,7 +379,6 @@ export class BuilderComponent implements OnInit, OnDestroy {
         gControl.setValue(TaskLaunchService.ctr.value(argsMap.get('*')[index]));
       }
       const group = new FormGroup({
-        property: new FormControl('', [TaskLaunchValidator.key]),
         global: gControl
       }, { validators: TaskLaunchValidator.keyRequired });
       builder.taskLaunchConfig.apps.forEach((app) => {
@@ -630,6 +629,18 @@ export class BuilderComponent implements OnInit, OnDestroy {
       });
       array.push(group);
     };
+
+    const addNoPropery = (array: FormArray) => {
+      const group = new FormGroup({
+        global: new FormControl('')
+      });
+
+      taskLaunchConfig.apps.forEach((app) => {
+        group.addControl(app.name, new FormControl(''));
+      });
+      array.push(group);
+    };
+
     const isEmpty = (dictionary): boolean => Object.entries(dictionary).every((a) => a[1] === '');
     const clean = (val: Array<any>, array: FormArray) => {
       const toRemove = val.map((a, index) =>
@@ -659,7 +670,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
 
     // Dynamic Arguments
     const argumentsControls: FormArray = new FormArray([]);
-    add(argumentsControls);
+    addNoPropery(argumentsControls);
     argumentsControls.valueChanges.subscribe((val: Array<any>) => {
       clean(val, argumentsControls);
     });
@@ -712,7 +723,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
    * @param builder
    * @returns {boolean}
    */
-  isSubmittable(builder): boolean {
+  isSubmittable(builder: Builder): boolean {
     if (!builder) {
       return false;
     }

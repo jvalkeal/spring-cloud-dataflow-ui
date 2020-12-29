@@ -117,9 +117,6 @@ export class TaskLaunchValidator {
 
   /**
    * Validate a key if any property value is set on a group
-   *
-   * @param {AbstractControl} group
-   * @returns {any}
    */
   static keyRequired(group: AbstractControl) {
     const keys = Object.keys((group as FormGroup).controls).filter(k => k !== 'property');
@@ -135,5 +132,4 @@ export class TaskLaunchValidator {
     group.get('property').setErrors({ invalid: true });
     return { invalid: true };
   }
-
 }
