@@ -551,6 +551,13 @@ export class BuilderComponent implements OnInit, OnDestroy {
   private build(taskLaunchConfig: TaskLaunchConfig): Builder {
     const formGroup: FormGroup = new FormGroup({});
 
+    // we dehydrate only when coming into builder, not
+    // when switching between build and free-text.
+    // dehydrated values are then expected to come back from free-text
+    if (this.properties.length === 0 && taskLaunchConfig.deploymentProperties.length > 0) {
+      this.properties = taskLaunchConfig.deploymentProperties;
+    }
+
     const getValue = (defaultValue) => !defaultValue ? '' : defaultValue;
     const builderAppsProperties = {};
     const builderDeploymentProperties = { global: [], apps: {} };

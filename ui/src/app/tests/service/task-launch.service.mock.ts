@@ -74,6 +74,7 @@ export class TaskLaunchServiceMock {
         suffix: 'MB'
       }
     ];
+    config.deploymentProperties = [];
 
     return of(config);
   }
