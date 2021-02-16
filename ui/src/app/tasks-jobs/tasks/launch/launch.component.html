@@ -23,7 +23,7 @@
                                   (copyProperties)="runPropertiesCopy($event)"
                                   (updateProperties)="updateProperties($event)"
                                   (updateArguments)="updateArguments($event)"
-                                  (launch)="runLaunch($event.props, $event.args)">
+                                  (launch)="runLaunch($event.props, $event.args, $event.showExecution)">
         </app-task-launch-builder>
       </clr-tab-content>
     </clr-tab>
@@ -39,7 +39,7 @@
                                     (copyArguments)="runArgumentsCopy($event)"
                                     (updateProperties)="updateProperties($event)"
                                     (updateArguments)="updateArguments($event)"
-                                    (launch)="runLaunch($event.props, $event.args)">
+                                    (launch)="runLaunch($event.props, $event.args, $event.showExecution)">
         </app-task-launch-free-text>
       </clr-tab-content>
     </clr-tab>

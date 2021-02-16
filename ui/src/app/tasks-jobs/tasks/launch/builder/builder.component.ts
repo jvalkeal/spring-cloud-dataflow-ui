@@ -113,7 +113,7 @@ export class BuilderComponent implements OnInit, OnDestroy {
   @Output() updateProperties = new EventEmitter();
   @Output() updateArguments = new EventEmitter();
   @Output() exportProperties = new EventEmitter();
-  @Output() launch = new EventEmitter<{props: string[], args: string[]}>();
+  @Output() launch = new EventEmitter<{props: string[], args: string[], showExecution: boolean}>();
   @Output() copyProperties = new EventEmitter();
 
   /**
@@ -1000,11 +1000,19 @@ export class BuilderComponent implements OnInit, OnDestroy {
   /**
    * Emit properties to launch Output.
    */
-  launchTask() {
+  emitLaunchTask(showExecution: boolean) {
     if (!this.isSubmittable(this.refBuilder)) {
       this.notificationService.error('An error occurred', 'Some field(s) are invalid.');
     } else {
-      this.launch.emit({props: this.getProperties(), args: this.getArguments()});
+      this.launch.emit({props: this.getProperties(), args: this.getArguments(), showExecution});
     }
+  }
+
+  launchTask() {
+    this.emitLaunchTask(false);
+  }
+
+  launchTaskAndShow() {
+    this.emitLaunchTask(true);
   }
 }

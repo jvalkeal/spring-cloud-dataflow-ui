@@ -29,7 +29,7 @@ export class FreeTextComponent implements OnInit, OnDestroy {
   @Output() copyProperties = new EventEmitter();
   @Output() exportArguments = new EventEmitter();
   @Output() copyArguments = new EventEmitter();
-  @Output() launch = new EventEmitter<{props: string[], args: string[]}>();
+  @Output() launch = new EventEmitter<{props: string[], args: string[], showExecution: boolean}>();
 
   formGroup: FormGroup;
 
@@ -169,8 +169,18 @@ export class FreeTextComponent implements OnInit, OnDestroy {
     this.copyArguments.emit(this.getCleanArguments());
   }
 
+  /**
+   * Emit properties to launch Output.
+   */
+  emitLaunchTask(showExecution: boolean) {
+    this.launch.emit({props: this.getCleanProperties(), args: this.getCleanArguments(), showExecution});  }
+
   launchTask() {
-    this.launch.emit({props: this.getCleanProperties(), args: this.getCleanArguments()});
+    this.emitLaunchTask(false);
+  }
+
+  launchTaskAndShow() {
+    this.emitLaunchTask(true);
   }
 
   private getCleanProperties(): string[] {

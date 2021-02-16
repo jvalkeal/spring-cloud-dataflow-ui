@@ -120,7 +120,7 @@ describe('streams/streams/deploy/deploy.component.ts', () => {
     done();
   });
 
-  it('should run a launch (success)', async (done) => {
+  it('should run a launch (success) and navigate to execution', async (done) => {
     const spy = spyOn(TaskServiceMock.mock, 'launch').and.callThrough();
     const navigate = spyOn((<any>component).router, 'navigate');
     fixture.detectChanges();
@@ -130,7 +130,7 @@ describe('streams/streams/deploy/deploy.component.ts', () => {
     expect(component).toBeTruthy();
     fixture.detectChanges();
     await fixture.whenStable();
-    component.runLaunch([], []);
+    component.runLaunch([], [], true);
     fixture.detectChanges();
     await fixture.whenStable();
     expect(spy).toHaveBeenCalled();
@@ -138,4 +138,21 @@ describe('streams/streams/deploy/deploy.component.ts', () => {
     done();
   });
 
+  it('should run a launch (success) and navigate to tasks', async (done) => {
+    const spy = spyOn(TaskServiceMock.mock, 'launch').and.callThrough();
+    const navigate = spyOn((<any>component).router, 'navigate');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component).toBeTruthy();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    component.runLaunch([], [], false);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(spy).toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalledWith(['tasks-jobs/tasks']);
+    done();
+  });
 });

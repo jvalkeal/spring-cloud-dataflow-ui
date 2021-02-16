@@ -440,10 +440,13 @@
         </div>
         <div>
           <a tabindex="600" id="btn-cancel" class="btn btn-default" routerLink="/tasks-jobs/tasks">Cancel</a>
-          <button tabindex="600" id="btn-deploy-builder" type="submit" class="btn btn-primary">
-            <span>Launch task</span>
+          <button tabindex="601" id="btn-deploy-builder" type="submit" class="btn btn-primary">
+            <span>Launch</span>
           </button>
-        </div>
+          <button tabindex="602" id="btn-deploy-builder" type="button" class="btn btn-primary" (click)="launchTaskAndShow()">
+            <span>Launch and show</span>
+          </button>
+      </div>
       </div>
     </div>
   </form>
